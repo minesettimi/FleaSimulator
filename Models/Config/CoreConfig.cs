@@ -1,0 +1,46 @@
+using System.Text.Json.Serialization;
+
+namespace fleasimulator.Models.Config;
+
+public class CoreConfig
+{
+    [JsonPropertyName("name")] public string Name { get; set; } = "Default Config";
+    [JsonPropertyName("author")] public string Author { get; set; } = "minesettimi";
+    [JsonPropertyName("buyConfig")] public BuyConfig BuyConfig { get; set; } = new();
+    [JsonPropertyName("sellConfig")] public SellConfig SellConfig { get; set; } = new();
+    [JsonPropertyName("wipePrices")] public WipePriceConfig WipePrices { get; set; } = new();
+    [JsonPropertyName("updateInterval")] public double UpdateInterval { get; set; } = 60.0;
+    [JsonPropertyName("updateInterp")] public double UpdateInterp { get; set; } = 60.0;
+    [JsonPropertyName("debug")] public bool Debug { get; set; } = false;
+    [JsonPropertyName("debugSimulation")] public bool? DebugSimulations { get; set; }
+    [JsonPropertyName("debugItem")] public string? DebugItem { get; set; }
+}
+
+public class BuyConfig
+{
+    [JsonPropertyName("enabled")] public bool Enabled { get; set; } = true;
+    [JsonPropertyName("chaos")] public bool Chaos { get; set; } = true;
+    [JsonPropertyName("supplyMinOffers")] public int SupplyMinOffers { get; set; } = 2;
+    [JsonPropertyName("supplyMaxOffers")] public int SupplyMaxOffers { get; set; } = 20;
+    [JsonPropertyName("supplyOfferOffset")] public int SupplyOfferOffset { get; set; } = 1;
+    [JsonPropertyName("demandMinSoldChance")] public double DemandMinSoldChance { get; set; } = 0.0;
+    [JsonPropertyName("demandMaxSoldChance")] public double DemandMaxSoldChance { get; set; } = 0.85;
+}
+
+public class SellConfig
+{
+    [JsonPropertyName("enabled")] public bool Enabled { get; set; } = true;
+    [JsonPropertyName("chaos")] public bool Chaos { get; set; } = true;
+    [JsonPropertyName("supplyMinPosition")] public int SupplyMinPosition { get; set; } = 5;
+    [JsonPropertyName("supplyMaxPosition")] public int SupplyMaxPosition { get; set; } = 15;
+    [JsonPropertyName("demandMinBuyChance")] public double DemandMinBuyChance { get; set; } = 10.0;
+    [JsonPropertyName("demandMaxBuyChance")] public double DemandMaxBuyChance { get; set; } = 100.0;
+    [JsonPropertyName("demandMinDelay")] public double DemandMinDelay { get; set; } = 3600.0;
+    [JsonPropertyName("demandMaxDelay")] public double DemandMaxDelay { get; set; } = 0.0;
+}
+
+public class WipePriceConfig
+{
+    [JsonPropertyName("enabled")] public bool Enabled { get; set; }
+    [JsonPropertyName("startLength")] public double StartLength { get; set; }
+}

@@ -1,0 +1,103 @@
+{
+  "core": 
+  {
+    //preset details
+    "name": "Testing",
+    "author": "minesettimi",
+    
+    //configuration for players buying from the flea
+    "buy":
+    {
+      "enabled": true,
+      "chaos": true, //can buy values be altered by chaos
+      "supplyMinOffers": 2, //offers available for items at minimum supply (0.01) 
+      "supplyMaxOffers": 20, //offers available at maximum supply (1.0)
+      "supplyOfferOffset": 1, //+- to the offer count by rng
+      "demandMinSoldChance": 0.0, //chance that an item has already been sold when purchased when demand is at minimum (0.01)
+      "demandMaxSoldChance": 0.85 //chance when demand is at maximum (1.0)
+    },
+    //configuration for players selling on the flea
+    "sell":
+    {
+      "enabled": true,
+      "chaos": true, //can sell values be altered by chaos
+      "supplyMinPosition": 5, //highest position in the flea list for an item to be 0% sell chance at minimum supply (0.01)
+      "supplyMaxPosition": 15, //position in the flea at maximum supply (1.0)
+      "demandMinBuyChance": 10.0, //chance an item is bought at the lowest position when at minimum demand (0.01) 
+      "demandMaxBuyChance": 100.0, //chance at maximum demand (1.0)
+      "demandMinDelay": 3600.0, //baseline delay for an item to be sold when at minimum demand (0.01)
+      "demandMaxDelay": 0.0 //baseline delay at maximum demand (1.0)
+    },
+    //progression of prices over a simulated wipe (THIS DOES !NOT! WIPE YOUR CHARACTER!)
+    "wipePrices":
+    {
+      "enabled": true,
+      "startLength": 10.0 //how long the start of a wipe lasts in days
+    },
+    "updateInterval": 15, //how often in minutes that flea market offers are updated
+    "updateInterp": 30, //how often in minutes the flea market is simulated
+    "debug": true,
+    "debugSimulations": true,
+    "debugItem": ""
+  },
+  //sets which sim categories apply to which items
+  "items":
+  {
+    //sets the category for all children items
+    "parents": 
+    {
+      "57864a66245977548f04a81f": "EarlyHideout", //electronics
+      "5c164d2286f774194c5e69fa": "SuperRare" //keycards
+    },
+    //categories for specific items, this overrides categories
+    "individual":
+    {
+      "5c1d0d6d86f7744bb2683e1f": "OmegaRare",
+      "5d80c78786f774403a401e3e": "Rare"
+    }
+  },
+  //categories for different simulation behaviors
+  "categories":
+  {
+    "EarlyHideout":
+    {
+      "valueMult": 0.9,
+      "earlyWipeMult": 8.0,
+      "minOfferPrice": 0.9,
+      "maxOfferPrice": 1.2,
+      "demand": 0.8,
+      "supply": 0.6
+    },
+    "OmegaRare":
+    {
+      "valueMult": 1.1,
+      "earlyWipeMult": 20.0,
+      "chaos": 1.0,
+      "minOfferPrice": 1.0,
+      "maxOfferPrice": 1.4,
+      "demand": 1.0,
+      "supply": 0.01
+    },
+    //the preset that's used when the preset is invalid or not given a preset
+    //if a preset doesn't have a value, the value is retrieved from here instead
+    "Default":
+    {
+      "valueMult": 1.0, //multiplies the base game baseline value
+      "earlyWipeMult": 5.0, //multiplies the value at the "wipe start", this multiplier is dynamically lowered over time
+      "chaos": 0.2, //how chaotic an item is, higher values cause the prices to be more unpredictable (0.01 - 1.0)
+      "chaosMinVal": 0.8, //how far below the base price can the chaos go (multiplier)
+      "chaosMaxVal": 1.5, //how far above the base price can the chaos go 
+      "chaosMinOffset": 0.05, //highest amount that values can be offset by min chaos (0.01)
+      "chaosMaxOffset": 0.5, //highest amount at max value (1.0)
+      "chaosMinChance": 0.1, //chance that the price strays when chaos is at its minimum (0.01)
+      "chaosMaxChance": 0.85, //chance when chaos is at maximum (1.0)
+      "settleSpeed": 0.2, //percentage speed price returns to normal (1.0 is instant, 0 is never)
+      "minOfferPrice": 0.95, //how far below the base price can offers be placed
+      "maxOfferPrice": 1.1, //how far above the bace price can offers be placed
+      "nonUniformPrices": true, //should prices be generated with a non-uniform random distribution
+      "demand": 0.5, //theoretical demand for the item, does not affect price but changes sell chance (0.01 - 1.0)
+      "supply": 0.5, //theoretical supply for the item, does not affect price but changes offer count (0.01 - 1.0)
+      "simChance": 1.0 //chance the items prices are simulated
+    }
+  }
+}
