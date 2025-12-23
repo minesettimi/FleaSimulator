@@ -5,10 +5,11 @@ using SPTarkov.Server.Core.DI;
 namespace FleaSimulator.OnLoad;
 
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-public class PostDb(ItemDataService dataService): IOnLoad
+public class PostDb(ItemDataService dataService, SimulationService simService): IOnLoad
 {
     public async Task OnLoad()
     {
         await dataService.OnLoad();
+        await simService.OnLoad();
     }
 }

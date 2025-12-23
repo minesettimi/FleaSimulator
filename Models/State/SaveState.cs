@@ -12,8 +12,9 @@ public enum WipeState
 public class SaveState
 {
     public WipeState WipeState { get; set; } = WipeState.Start;
-    public DateTime StartDate { get; set; } = DateTime.Now;
-    public long LastUpdate { get; set; } = 0;
-    public long NextUpdate { get; set; } = 0;
+    public DateTime StartDate { get; set; } = DateTime.Now; //market creation date
+    public long LastUpdate { get; set; } //last update in unix
+    public long UpdateTime {get; set;} // current position between last and next update, in unix
+    public long NextUpdate { get; set; } //next update in unix
     public Dictionary<MongoId, ItemState> Items { get; set; } = new();
 }
