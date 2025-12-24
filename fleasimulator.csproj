@@ -30,7 +30,6 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Folder Include="Helpers\" />
       <Folder Include="Overrides\Buy\" />
       <Folder Include="Overrides\Sell\" />
       <Folder Include="Utils\" />

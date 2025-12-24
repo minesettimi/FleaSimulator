@@ -87,10 +87,10 @@
       "chaos": 0.2, //how chaotic an item is, higher values cause the prices to be more unpredictable (0.01 - 1.0)
       "chaosMinVal": 0.8, //how far below the base price can the chaos go (multiplier)
       "chaosMaxVal": 1.5, //how far above the base price can the chaos go 
-      "chaosMinOffset": 0.05, //highest amount that values can be offset by min chaos (0.01)
-      "chaosMaxOffset": 0.5, //highest amount at max value (1.0)
-      "chaosMinChance": 0.1, //chance that the price strays when chaos is at its minimum (0.01)
-      "chaosMaxChance": 0.85, //chance when chaos is at maximum (1.0)
+      "chaosMaxIter": 3, //max number of times can chaos be applied to an item (rarer each time)
+      "chaosMinOffset": -0.1, //lowest percentage that values can be offset by chaos
+      "chaosMaxOffset": 0.1, //highest percentage
+      "chaosChance": 0.85, //chance that chaos effects a property
       "settleSpeed": 0.2, //percentage speed price returns to normal (1.0 is instant, 0 is never)
       "minOfferPrice": 0.95, //how far below the base price can offers be placed
       "maxOfferPrice": 1.1, //how far above the bace price can offers be placed

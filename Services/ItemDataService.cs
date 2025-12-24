@@ -96,11 +96,13 @@ public class ItemDataService
 
             if (wipePriceConfig.Enabled)
                 earlyWipeMult = category.EarlyWipeMult;
+
+            int startingPrice = Convert.ToInt32(Math.Round(convertedValue * earlyWipeMult));
             
             itemState.Category = category;
             itemState.TruePrice = convertedValue;
-            itemState.CurrentPrice = Convert.ToInt32(Math.Round(convertedValue * earlyWipeMult));
-            itemState.TargetPrice = convertedValue;
+            itemState.CurrentPrice = startingPrice;
+            itemState.TargetPrice = startingPrice;
             
             newState.Items.Add(key, itemState);
         }

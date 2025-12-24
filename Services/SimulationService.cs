@@ -1,15 +1,19 @@
+using FleaSimulator.Helpers;
 using fleasimulator.Models.Config;
 using FleaSimulator.Models.State;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Utils;
 
 namespace FleaSimulator.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class SimulationService(PresetService preset,
     ItemDataService itemData,
+    ChaosHelper chaosHelper,
+    RandomUtil randomUtil,
     ISptLogger<SimulationService> logger)
 {
     public Timer SimulationTimer;
@@ -41,7 +45,30 @@ public class SimulationService(PresetService preset,
         
         foreach ((MongoId key, ItemState item) in state.Items)
         {
-            CategoryConfig itemCategory = item.Category;
+            CategoryConfig category = item.Category;
+
+            item.CurrentPrice = item.TargetPrice;
+
+            if (!randomUtil.GetChance100(category.SimChance * 100))
+                continue;
+            
+            //the value will slowly progress towards the true value
+            int trueValueDif = item.CurrentPrice - item.TruePrice;
+            double settleVal = randomUtil.ReduceValueByPercent(trueValueDif, 
+                chaosHelper.ChaosShift(category, category.SettleSpeed));
+            
+            item.TargetPrice -= (int)Math.Round(settleVal);
+
+            double chaosChance = randomUtil.GetBiasedRandomNumber(1d, category.ChaosMaxIterations, 
+                category.ChaosMaxIterations - category.Chaos, 2d);
+
+            int chaosCount = (int)Math.Round(chaosChance);
+
+            for (int i = 0; i < chaosCount; i++)
+            {
+                item.TargetPrice = chaosHelper.ChaosShift(category, item.TargetPrice);
+            }
+
         }
         
         long endTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();

@@ -16,10 +16,10 @@ public class CategoryConfig
     [JsonPropertyName("chaos")] public double Chaos { get; set; }
     [JsonPropertyName("chaosMinVal")] public double ChaosMinVal { get; set; }
     [JsonPropertyName("chaosMaxVal")] public double ChaosMaxVal { get; set; }
+    [JsonPropertyName("chaosMaxIter")] public int ChaosMaxIterations { get; set; }
     [JsonPropertyName("chaosMinOffset")] public double ChaosMinOffset { get; set; }
     [JsonPropertyName("chaosMaxOffset")] public double ChaosMaxOffset { get; set; }
-    [JsonPropertyName("chaosMinChance")] public double ChaosMinChance { get; set; }
-    [JsonPropertyName("chaosMaxChance")] public double ChaosMaxChance { get; set; }
+    [JsonPropertyName("chaosChance")] public double ChaosChance { get; set; }
     [JsonPropertyName("settleSpeed")] public double SettleSpeed { get; set; }
     [JsonPropertyName("minOfferPrice")] public double MinOfferPrice { get; set; }
     [JsonPropertyName("maxOfferPrice")] public double MaxOfferPrice { get; set; }
@@ -38,10 +38,10 @@ public class CategoryConfig
             Chaos = 0.2,
             ChaosMinVal = 0.8,
             ChaosMaxVal = 1.5,
+            ChaosMaxIterations = 3,
             ChaosMinOffset = 0.05,
             ChaosMaxOffset = 0.5,
-            ChaosMinChance = 0.1,
-            ChaosMaxChance = 0.85,
+            ChaosChance = 0.85,
             SettleSpeed = 0.2,
             MinOfferPrice = 0.95,
             MaxOfferPrice = 1.1,
