@@ -44,7 +44,7 @@ public class ItemDataService
             loadedState.NextUpdate += difference;
             loadedState.UpdateTime = current;
             
-            MapCategories();
+            MapCategories(loadedState);
             
             logger.Success("[FleaSimulator] State file successfully loaded.");
         }
@@ -112,18 +112,18 @@ public class ItemDataService
         return newState;
     }
 
-    private void MapCategories()
+    private void MapCategories(SaveState saveState)
     {
         Dictionary<MongoId, TemplateItem> items = databaseService.GetItems();
         
-        foreach ((MongoId key, ItemState itemState) in CurrentState.Items)
+        foreach ((MongoId key, ItemState itemState) in saveState.Items)
         {
             items.TryGetValue(key, out TemplateItem? trueItem);
 
             if (trueItem is null)
             {
                 logger.Error($"[FleaSimulator] Item with key {key} does not exist in-game, deleting.");
-                CurrentState.Items.Remove(key);
+                saveState.Items.Remove(key);
                 continue;
             }
 
@@ -132,7 +132,7 @@ public class ItemDataService
             if (category is null)
             {
                 logger.Warning($"[FleaSimulator] Item {trueItem.Name} found in state but is blacklisted, deleting.");
-                CurrentState.Items.Remove(key);
+                saveState.Items.Remove(key);
                 continue;
             }
             
@@ -140,7 +140,7 @@ public class ItemDataService
         }
     }
     
-    private CategoryConfig? RetrieveItemCategory(TemplateItem item)
+    public CategoryConfig? RetrieveItemCategory(TemplateItem item)
     {
         CategoryConfig? resultCategory = null;
         ItemConfig itemConfig = preset.Config.Items;

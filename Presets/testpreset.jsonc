@@ -37,8 +37,8 @@
     "updateInterval": 15, //how often in minutes that flea market offers are updated
     "updateInterp": 30, //how often in minutes the flea market is simulated
     "debug": true,
-    "debugSimulations": true,
-    "debugItem": ""
+    "debugSimulation": true,
+    "debugItem": "5c1d0d6d86f7744bb2683e1f"
   },
   //sets which sim categories apply to which items
   "items":

@@ -32,7 +32,6 @@
     <ItemGroup>
       <Folder Include="Overrides\Buy\" />
       <Folder Include="Overrides\Sell\" />
-      <Folder Include="Utils\" />
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">

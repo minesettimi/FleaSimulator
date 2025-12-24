@@ -12,8 +12,8 @@ public class CoreConfig
     [JsonPropertyName("updateInterval")] public double UpdateInterval { get; set; } = 60.0;
     [JsonPropertyName("updateInterp")] public double UpdateInterp { get; set; } = 60.0;
     [JsonPropertyName("debug")] public bool Debug { get; set; } = false;
-    [JsonPropertyName("debugSimulation")] public bool? DebugSimulations { get; set; }
-    [JsonPropertyName("debugItem")] public string? DebugItem { get; set; }
+    [JsonPropertyName("debugSimulation")] public bool DebugSimulation { get; set; } = false;
+    [JsonPropertyName("debugItem")] public string DebugItem { get; set; } = "";
 }
 
 public class BuyConfig

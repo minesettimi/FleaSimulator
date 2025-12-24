@@ -88,8 +88,8 @@ public class PresetService
             Directory.CreateDirectory(presetPath);
         }
         
-        File.WriteAllTextAsync(Path.Join(ModPath, "loader.json"), jsonUtil.Serialize(loader));
-        File.WriteAllTextAsync(Path.Join(presetPath, $"{CurrentPreset}.jsonc"), jsonUtil.Serialize(Config));
+        File.WriteAllTextAsync(Path.Join(ModPath, "loader.json"), jsonUtil.Serialize(loader, true));
+        File.WriteAllTextAsync(Path.Join(presetPath, $"{CurrentPreset}.jsonc"), jsonUtil.Serialize(Config, true));
     }
     
     //assign all null category values the values 

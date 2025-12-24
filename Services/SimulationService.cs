@@ -3,7 +3,6 @@ using fleasimulator.Models.Config;
 using FleaSimulator.Models.State;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 
@@ -45,30 +44,7 @@ public class SimulationService(PresetService preset,
         
         foreach ((MongoId key, ItemState item) in state.Items)
         {
-            CategoryConfig category = item.Category;
-
-            item.CurrentPrice = item.TargetPrice;
-
-            if (!randomUtil.GetChance100(category.SimChance * 100))
-                continue;
-            
-            //the value will slowly progress towards the true value
-            int trueValueDif = item.CurrentPrice - item.TruePrice;
-            double settleVal = randomUtil.ReduceValueByPercent(trueValueDif, 
-                chaosHelper.ChaosShift(category, category.SettleSpeed));
-            
-            item.TargetPrice -= (int)Math.Round(settleVal);
-
-            double chaosChance = randomUtil.GetBiasedRandomNumber(1d, category.ChaosMaxIterations, 
-                category.ChaosMaxIterations - category.Chaos, 2d);
-
-            int chaosCount = (int)Math.Round(chaosChance);
-
-            for (int i = 0; i < chaosCount; i++)
-            {
-                item.TargetPrice = chaosHelper.ChaosShift(category, item.TargetPrice);
-            }
-
+            SimulateItem(item);
         }
         
         state.LastUpdate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -80,5 +56,40 @@ public class SimulationService(PresetService preset,
         long endTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         
         logger.Info($"[FleaSimulator] Finished simulation in {endTime - startTime}ms.");
+    }
+
+    public void SimulateItem(ItemState item)
+    {
+        CategoryConfig category = item.Category;
+
+        item.CurrentPrice = item.TargetPrice;
+        
+        logger.Info($"Sim Chance: {category.SimChance}");
+
+        if (!randomUtil.GetChance100(category.SimChance * 100))
+            return;
+            
+        //the value will slowly progress towards the true value
+        int trueValueDif = item.CurrentPrice - item.TruePrice;
+        double settleVal = randomUtil.ReduceValueByPercent(trueValueDif, 
+            chaosHelper.ChaosShift(category, category.SettleSpeed));
+            
+        item.TargetPrice -= (int)Math.Round(settleVal);
+
+        double chaosClamp = category.ChaosMaxIterations - 1d;
+
+        double shift = Math.Clamp(category.ChaosMaxIterations - category.Chaos - 1d, 1d, chaosClamp);
+
+        double chaosChance = randomUtil.GetBiasedRandomNumber(1d, category.ChaosMaxIterations, 
+            shift, 3d - category.Chaos * 10);
+
+        int chaosCount = (int)Math.Round(chaosChance);
+
+        for (int i = 0; i < chaosCount; i++)
+        {
+            item.TargetPrice = chaosHelper.ChaosShift(category, item.TargetPrice);
+        }
+        
+        logger.Info($"Current Price: {item.TargetPrice}");
     }
 }
