@@ -71,6 +71,12 @@ public class SimulationService(PresetService preset,
 
         }
         
+        state.LastUpdate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        state.UpdateTime = state.LastUpdate;
+        state.NextUpdate = state.LastUpdate + (long)Math.Round(preset.Config.Core.UpdateInterp * 60);
+        
+        itemData.SaveCurrentState();
+        
         long endTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         
         logger.Info($"[FleaSimulator] Finished simulation in {endTime - startTime}ms.");
