@@ -52,7 +52,6 @@ public class PresetService
         DefaultCategoryConfig = Config.Categories["Default"];
         
         AssignCategoryDefaults();
-        SaveConfig();
     }
 
     private void ValidateConfig()
@@ -65,10 +64,14 @@ public class PresetService
             coreConfig.UpdateInterval = coreConfig.UpdateInterp;
         }
 
-        if (!Config.Categories.ContainsKey("Default"))
+        if (!Config.SavedCategories.TryGetValue("Default", out SavedCategoryConfig? category))
         {
             logger.Error("[FleaSimulator] Default category not specified in config! Generating new one.");
             Config.Categories["Default"] = DefaultCategoryConfig;
+        }
+        else
+        {
+            Config.Categories["Default"] = CategoryConfig.CopyValues(DefaultCategoryConfig, category);
         }
 
         if (coreConfig.WipePrices is { Enabled: true, StartLength: <= 0 })
@@ -79,34 +82,17 @@ public class PresetService
 
         //TODO: ADD MORE VALIDATIONS
     }
-
-    private void SaveConfig()
-    {
-        string presetPath = Path.Join(ModPath, "Presets");
-        if (!Directory.Exists(presetPath))
-        {
-            Directory.CreateDirectory(presetPath);
-        }
-        
-        File.WriteAllTextAsync(Path.Join(ModPath, "loader.json"), jsonUtil.Serialize(loader, true));
-        File.WriteAllTextAsync(Path.Join(presetPath, $"{CurrentPreset}.jsonc"), jsonUtil.Serialize(Config, true));
-    }
     
-    //assign all null category values the values 
+    //migrate all saved categories to regular categories
+    //this bypasses having to null check EVERYWHERE that a category is used
     private void AssignCategoryDefaults()
     {
-        PropertyInfo[] categoryProps = typeof(CategoryConfig).GetProperties();
-        
-        foreach (KeyValuePair<string, CategoryConfig> category in Config.Categories)
+        foreach (KeyValuePair<string, SavedCategoryConfig> category in Config.SavedCategories)
         {
-            //loop through each value of CategoryConfig and set the values to the default if null
-            foreach (PropertyInfo prop in categoryProps)
-            {
-                if (prop.GetValue(category.Value) is not null) continue;
-                
-                prop.SetValue(category.Value, DefaultCategoryConfig);
-                logger.Debug($"Assigning category var {category.Key} to default {category.Value}");
-            }
+            if (category.Key == "Default")
+                continue;
+            
+            Config.Categories.Add(category.Key, CategoryConfig.CopyValues(DefaultCategoryConfig, category.Value));
         }
     }
 }
