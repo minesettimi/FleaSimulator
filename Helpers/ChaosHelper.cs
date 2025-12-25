@@ -1,12 +1,13 @@
 using fleasimulator.Models.Config;
 using FleaSimulator.Services;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 
 namespace FleaSimulator.Helpers;
 
 [Injectable]
-public class ChaosHelper(RandomUtil rng, MathUtil mathUtil)
+public class ChaosHelper(RandomUtil rng, MathUtil mathUtil, ISptLogger<ChaosHelper> logger)
 {
     //randomly adjust value according to the provided configuration
     public double ChaosShift(double value, double chance, double minOffset, double maxOffset)
@@ -15,9 +16,17 @@ public class ChaosHelper(RandomUtil rng, MathUtil mathUtil)
             return value;
         
         //don't want constants
-        double trueAdjust = rng.RandNum(minOffset, maxOffset);
+        double trueAdjust = rng.RandNum(maxOffset, minOffset, 8);
+
+        if (trueAdjust > maxOffset || trueAdjust < minOffset)
+        {
+            logger.Warning($"[FleaSimulator] Chaos generated {trueAdjust} when max is {maxOffset} and min is {minOffset}");
+            trueAdjust = Math.Clamp(trueAdjust, minOffset, maxOffset);
+        }
+
+        double adjustedValue = rng.ReduceValueByPercent(value, trueAdjust * 100);
         
-        return rng.ReduceValueByPercent(value, trueAdjust * 100);
+        return Math.Round(adjustedValue, 4);
     }
 
     public double ChaosShift(CategoryConfig config, double value)

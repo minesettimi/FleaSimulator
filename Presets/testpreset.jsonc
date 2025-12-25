@@ -38,7 +38,7 @@
     "updateInterp": 30, //how often in minutes the flea market is simulated
     "debug": true,
     "debugSimulation": true,
-    "debugItem": "5c1d0d6d86f7744bb2683e1f"
+    "debugItem": "5c06779c86f77426e00dd782"
   },
   //sets which sim categories apply to which items
   "items":
@@ -46,35 +46,118 @@
     //sets the category for all children items
     "parents": 
     {
-      "57864a66245977548f04a81f": "EarlyHideout", //electronics
-      "5c164d2286f774194c5e69fa": "SuperRare" //keycards
+      "57864a66245977548f04a81f": "Hideout", //electronics
+      "57864ada245977548638de91": "Hideout", //building material
+      "5c99f98d86f7745c314214b3": "Common", //mechanical keys
+      "5c164d2286f774194c5e69fa": "ExtremelyRare", //keycards
+      "57864c8c245977548867e7f1": "Medical", //medical supplies
+      "5795f317245977243854e041": "SuperRare", //cases
+      "5447e1d04bdc2dff2f8b4567": "Rare", //knives
+      "5b3f15d486f77432d0509248": "Common", //armbands
+      "5448e5284bdc2dcb718b4567": "Rare", //vests
+      "5448e54d4bdc2dcc718b4568": "Rare", //armour
+      "644120aa86ffbe10ee032b6f": "SuperRare", //armored plates
+      "5448e53e4bdc2d60728b4567": "Rare", //backpacks
+      "55818aeb4bdc2ddc698b456a": "ExtremelyRare" //specialty scopes
+      
     },
     //categories for specific items, this overrides categories
     "individual":
     {
-      "5c1d0d6d86f7744bb2683e1f": "OmegaRare",
-      "5d80c78786f774403a401e3e": "Rare"
+      //medical
+      "5c0530ee86f774697952d952": "ExtremelyRare",
+      
+      //knives
+      "5c0126f40db834002a125382": "OmegaRare",
+      
+      //armbands
+      "5f9949d869e2777a0e779ba5": "OmegaRare",
+      
+      //cheaper cases
+      "5aafbde786f774389d0cbc0f": "Rare",
+      "590c60fc86f77412b13fddcf": "Rare",
+      
+      //keys vary wildly, add any keys that aren't worthless here
+      //marked keys
+      "5780cf7f2459777de4559322": "ExtremelyRare",
+      "5d80c62a86f7744036212b3f": "ExtremelyRare",
+      "5d80c60f86f77440373c4ece": "ExtremelyRare",
+      "5ede7a8229445733cb4c18e2": "ExtremelyRare",
+      "62987dfc402c7f69bf010923": "ExtremelyRare",
+      "63a3a93f8a56922e82001f5d": "ExtremelyRare",
+      
+      //other high priority
+      "5ad5d7d286f77450166e0a89": "SuperRare",
+      "6582dbf0b8d7830efc45016f": "SuperRare"
     }
   },
   //categories for different simulation behaviors
   "categories":
   {
-    "EarlyHideout":
+    "Common":
     {
-      "valueMult": 0.9,
+      "chaos": 0.05,
+      "chaosChance": 0.3,
+      "minOfferPrice": 0.85,
+      "maxOfferPrice": 1.0,
+      "demand": 0.1,
+      "supply": 1.0
+    },
+    "Hideout":
+    {
+      "valueMult": 1.0,
+      "chaos": 0.5,
       "earlyWipeMult": 8.0,
+      "chaosChance": 0.65,
       "minOfferPrice": 0.9,
       "maxOfferPrice": 1.2,
       "demand": 0.8,
-      "supply": 0.6
+      "supply": 0.8
+    },
+    "Rare":
+    {
+      "earlyWipeMult": 3.5,
+      "chaos": 0.7,
+      "chaosChance": 0.8,
+      "chaosMaxIter": 6,
+      "demand": 0.7,
+      "supply": 0.3
+    },
+    "SuperRare":
+    {
+      "earlyWipeMult": 4.0,
+      "chaos": 0.85,
+      "chaosChance": 0.9,
+      "chaosMaxIter": 10,
+      "simChance": 0.85,
+      "demand": 0.8,
+      "supply": 0.3
+    },
+    "ExtremelyRare":
+    {
+      "valueMult": 1.1,
+      "earlyWipeMult": 3.0,
+      "chaos": 0.95,
+      "chaosChance": 0.9,
+      "settleSpeed": 0.0001,
+      "chaosMaxIter": 20,
+      "minOfferPrice": 1.0,
+      "maxOfferPrice": 1.4,
+      "simChance": 0.45,
+      "demand": 0.8,
+      "supply": 0.3
     },
     "OmegaRare":
     {
-      "valueMult": 1.1,
-      "earlyWipeMult": 20.0,
+      "valueMult": 1.2,
+      "earlyWipeMult": 10.0,
       "chaos": 1.0,
+      "chaosChance": 1.0,
+      "settleSpeed": 0.5,
+      "chaosMaxIter": 30,
       "minOfferPrice": 1.0,
       "maxOfferPrice": 1.4,
+      "simChance": 0.05,
       "demand": 1.0,
       "supply": 0.01
     },
@@ -84,14 +167,14 @@
     {
       "valueMult": 1.0, //multiplies the base game baseline value
       "earlyWipeMult": 5.0, //multiplies the value at the "wipe start", this multiplier is dynamically lowered over time
-      "chaos": 0.2, //how chaotic an item is, higher values cause the prices to be more unpredictable (0.01 - 1.0)
-      "chaosMinVal": 0.8, //how far below the base price can the chaos go (multiplier)
-      "chaosMaxVal": 1.5, //how far above the base price can the chaos go 
+      "chaos": 0.1, //how chaotic an item is, higher values cause the prices to be more unpredictable (0.01 - 1.0)
+      "chaosMinVal": 0.9, //how far below the base price can the chaos go (multiplier)
+      "chaosMaxVal": 1.1, //how far above the base price can the chaos go 
       "chaosMaxIter": 3, //max number of times can chaos be applied to an item (rarer each time)
-      "chaosMinOffset": -0.1, //lowest percentage that values can be offset by chaos
-      "chaosMaxOffset": 0.1, //highest percentage
-      "chaosChance": 0.85, //chance that chaos effects a property
-      "settleSpeed": 0.2, //percentage speed price returns to normal (1.0 is instant, 0 is never)
+      "chaosMinOffset": -0.05, //lowest percentage that values can be offset by chaos
+      "chaosMaxOffset": 0.05, //highest percentage
+      "chaosChance": 0.75, //chance that chaos effects a property
+      "settleSpeed": 0.025, //percentage speed price returns to normal (1.0 is instant, 0 is never)
       "minOfferPrice": 0.95, //how far below the base price can offers be placed
       "maxOfferPrice": 1.1, //how far above the bace price can offers be placed
       "nonUniformPrices": true, //should prices be generated with a non-uniform random distribution

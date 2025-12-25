@@ -13,6 +13,7 @@ public class SimulationService(PresetService preset,
     ItemDataService itemData,
     ChaosHelper chaosHelper,
     RandomUtil randomUtil,
+    MathUtil mathUtil,
     ISptLogger<SimulationService> logger)
 {
     public Timer SimulationTimer;
@@ -36,6 +37,12 @@ public class SimulationService(PresetService preset,
     {
         long startTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         SaveState state = itemData.CurrentState;
+
+        if (state.WipeState == WipeState.Start && DateTime.Now > state.WipeChange)
+        {
+            logger.Info("[FleaSimulator] Wipe middle has begun.");
+            state.WipeState = WipeState.Middle;
+        }
         
         logger.Debug("[FleaSimulator] Starting simulation.");
 
@@ -58,21 +65,38 @@ public class SimulationService(PresetService preset,
         logger.Info($"[FleaSimulator] Finished simulation in {endTime - startTime}ms.");
     }
 
-    public void SimulateItem(ItemState item)
+    public void SimulateItem(ItemState item, DateTime? time = null)
     {
         CategoryConfig category = item.Category;
-
-        item.CurrentPrice = item.TargetPrice;
         
-        logger.Info($"Sim Chance: {category.SimChance}");
+        item.CurrentPrice = item.TargetPrice;
 
         if (!randomUtil.GetChance100(category.SimChance * 100))
             return;
-            
+        
         //the value will slowly progress towards the true value
         int trueValueDif = item.CurrentPrice - item.TruePrice;
-        double settleVal = randomUtil.ReduceValueByPercent(trueValueDif, 
-            chaosHelper.ChaosShift(category, category.SettleSpeed));
+
+        double settleVal = 0;
+
+        if (itemData.CurrentState.WipeState == WipeState.Middle || (time is not null && itemData.CurrentState.WipeChange < time))
+        {
+            settleVal = trueValueDif * chaosHelper.ChaosShift(category, category.SettleSpeed);
+        }
+        else
+        {
+            //calculate early wipe multiplier
+            double diffPercent = item.CurrentPrice / (double)item.TruePrice;
+            double iterationsLeft = (itemData.CurrentState.WipeChange - (time ?? DateTime.Now)).TotalMinutes;
+            iterationsLeft /= preset.Config.Core.UpdateInterp;
+            iterationsLeft = Math.Ceiling(iterationsLeft);
+
+            double iterPercentage = 1 / iterationsLeft;
+            
+            double changeFactor = Math.Pow(diffPercent, iterPercentage) - 1;
+
+            settleVal = trueValueDif * changeFactor;
+        }
             
         item.TargetPrice -= (int)Math.Round(settleVal);
 
@@ -81,15 +105,18 @@ public class SimulationService(PresetService preset,
         double shift = Math.Clamp(category.ChaosMaxIterations - category.Chaos - 1d, 1d, chaosClamp);
 
         double chaosChance = randomUtil.GetBiasedRandomNumber(1d, category.ChaosMaxIterations, 
-            shift, 3d - category.Chaos * 10);
+            shift, 2d + category.Chaos*2);
 
         int chaosCount = (int)Math.Round(chaosChance);
 
+        int previousPrice = item.TargetPrice;
+        double minPrice = previousPrice * category.ChaosMinVal;
+        double maxPrice = previousPrice * category.ChaosMaxVal;
         for (int i = 0; i < chaosCount; i++)
         {
             item.TargetPrice = chaosHelper.ChaosShift(category, item.TargetPrice);
         }
-        
-        logger.Info($"Current Price: {item.TargetPrice}");
+
+        item.TargetPrice = (int)Math.Round(Math.Clamp(item.TargetPrice, minPrice, maxPrice));
     }
 }

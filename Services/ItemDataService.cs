@@ -46,7 +46,10 @@ public class ItemDataService
             
             MapCategories(loadedState);
             
-            logger.Success("[FleaSimulator] State file successfully loaded.");
+            logger.Success($"[FleaSimulator] State file successfully loaded, current state is {loadedState.WipeState}.");
+            
+            if (loadedState.WipeState == WipeState.Start)
+                logger.Info($"[FleaSimulator] Wipe start ends at {loadedState.WipeChange.ToLongDateString()}");
         }
 
         CurrentState = loadedState;
@@ -73,6 +76,9 @@ public class ItemDataService
         
         WipePriceConfig wipePriceConfig = preset.Config.Core.WipePrices;
         newState.WipeState = wipePriceConfig.Enabled ? WipeState.Start : WipeState.Middle;
+
+        if (newState.WipeState == WipeState.Start)
+            newState.WipeChange = DateTime.Now.AddDays(wipePriceConfig.StartLength);
         
         logger.Info($"[FleaSimulator] Generating market at state: {newState.WipeState}, {wipePriceConfig.Enabled}");
 

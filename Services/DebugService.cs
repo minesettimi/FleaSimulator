@@ -69,16 +69,21 @@ public class DebugService(PresetService preset,
         
         //build csv export
         StringBuilder csv = new();
-        csv.AppendLine("True Price,Current Price,Target Price");
+        csv.AppendLine("Test Date,True Price,Current Price,Target Price");
+        
+        DateTime testDate = DateTime.Now;
 
         for (int i = 0; i < iterationCount; i++)
         {
-            csv.AppendLine($"{testItem.TruePrice},{testItem.CurrentPrice},{testItem.TargetPrice}");
-            simService.SimulateItem(testItem);
+            csv.AppendLine($"{testDate.AddMinutes(preset.Config.Core.UpdateInterp)},{testItem.TruePrice}," +
+                           $"{testItem.CurrentPrice},{testItem.TargetPrice}");
+            simService.SimulateItem(testItem, preset.Config.Core.WipePrices.Enabled ? testDate : null);
+            testDate = testDate.AddMinutes(preset.Config.Core.UpdateInterp);
         }
 
         await File.WriteAllTextAsync(Path.Join(preset.ModPath, "debugOutput.csv"), csv.ToString());
         
-        logger.Success($"[FleaSimulator] Debug simulation completed with {iterationCount} iterations. CSV saved to mod directory");
+        logger.Success($"[FleaSimulator] Debug simulation at state {itemDataService.CurrentState.WipeState} completed " +
+                       $"with {iterationCount} iterations. CSV saved to mod directory");
     }
 }
