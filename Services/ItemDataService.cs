@@ -160,6 +160,17 @@ public class ItemDataService
             
             resultCategory = preset.Config.Categories.GetValueOrDefault(categoryName);
         }
+
+        foreach (MongoId parentKey in itemConfig.Parents.Keys)
+        {
+            if (!itemHelper.IsOfBaseclass(item.Id, parentKey)) continue;
+            
+            if (categoryName == "Blacklist")
+                return null;
+                
+            resultCategory = preset.Config.Categories.GetValueOrDefault(itemConfig.Parents[parentKey]);
+            break;
+        }
         
         return resultCategory ?? preset.DefaultCategoryConfig;
     }

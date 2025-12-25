@@ -44,8 +44,10 @@
   "items":
   {
     //sets the category for all children items
+    //priority is based on how early in the list, NOT hierarchy (TODO)
     "parents": 
     {
+      "55818aeb4bdc2ddc698b456a": "ExtremelyRare", //specialty scopes
       "57864a66245977548f04a81f": "Hideout", //electronics
       "57864ada245977548638de91": "Hideout", //building material
       "5c99f98d86f7745c314214b3": "Common", //mechanical keys
@@ -53,12 +55,11 @@
       "57864c8c245977548867e7f1": "Medical", //medical supplies
       "5795f317245977243854e041": "SuperRare", //cases
       "5447e1d04bdc2dff2f8b4567": "Rare", //knives
-      "5b3f15d486f77432d0509248": "Common", //armbands
       "5448e5284bdc2dcb718b4567": "Rare", //vests
       "5448e54d4bdc2dcc718b4568": "Rare", //armour
       "644120aa86ffbe10ee032b6f": "SuperRare", //armored plates
       "5448e53e4bdc2d60728b4567": "Rare", //backpacks
-      "55818aeb4bdc2ddc698b456a": "ExtremelyRare" //specialty scopes
+      "5448fe124bdc2da5018b4567": "Common" //weapon mods
       
     },
     //categories for specific items, this overrides categories
