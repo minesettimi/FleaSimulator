@@ -4,7 +4,7 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Utils;
 
-namespace fleasimulator.Models.Config;
+namespace FleaSimulator.Models.Config;
 
 public class ItemConfig
 {

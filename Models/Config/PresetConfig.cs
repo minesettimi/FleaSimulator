@@ -1,9 +1,6 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using fleasimulator.Models.Config;
-using SPTarkov.Server.Core.Models.Common;
 
-namespace FleaSimulator.Models;
+namespace FleaSimulator.Models.Config;
 
 public class LoaderConfig
 {

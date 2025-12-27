@@ -1,5 +1,5 @@
 using System.Text;
-using fleasimulator.Models.Config;
+using FleaSimulator.Models.Config;
 using FleaSimulator.Models.State;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;

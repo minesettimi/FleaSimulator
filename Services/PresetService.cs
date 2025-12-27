@@ -1,6 +1,6 @@
 using System.Reflection;
 using FleaSimulator.Models;
-using fleasimulator.Models.Config;
+using FleaSimulator.Models.Config;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Utils;

@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using fleasimulator.Models.Config;
+using FleaSimulator.Models.Config;
 
 namespace FleaSimulator.Models.State;
 

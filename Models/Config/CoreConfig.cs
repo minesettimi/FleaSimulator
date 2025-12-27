@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace fleasimulator.Models.Config;
+namespace FleaSimulator.Models.Config;
 
 public class CoreConfig
 {

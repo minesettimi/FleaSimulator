@@ -41,6 +41,7 @@
     "debugItem": "5c06779c86f77426e00dd782"
   },
   //sets which sim categories apply to which items
+  //order is individual -> direct parents -> base classes (order is based on config order NOT hierarchy.)
   "items":
   {
     //sets the category for all children items
