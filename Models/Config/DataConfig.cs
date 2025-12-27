@@ -19,11 +19,13 @@ public class CategoryConfig
     public double Chaos { get; set; }
     public double ChaosMinVal { get; set; }
     public double ChaosMaxVal { get; set; }
+    public double ChaosMinIterations { get; set; }
     public int ChaosMaxIterations { get; set; }
     public double ChaosMinOffset { get; set; }
     public double ChaosMaxOffset { get; set; }
     public double ChaosChance { get; set; }
     public double SettleSpeed { get; set; }
+    public bool  SettleOnlyMin { get; set; }
     public double MinOfferPrice { get; set; }
     public double MaxOfferPrice { get; set; }
     public bool NonUniformPrices { get; set; }
@@ -38,14 +40,16 @@ public class CategoryConfig
         {
             ValueMult = 1.0,
             EarlyWipeMult = 5.0,
-            Chaos = 0.2,
-            ChaosMinVal = 0.8,
-            ChaosMaxVal = 1.5,
+            Chaos = 0.1,
+            ChaosMinVal = 0.9,
+            ChaosMaxVal = 1.1,
+            ChaosMinIterations = 0,
             ChaosMaxIterations = 3,
-            ChaosMinOffset = 0.05,
-            ChaosMaxOffset = 0.5,
-            ChaosChance = 0.85,
-            SettleSpeed = 0.2,
+            ChaosMinOffset = -0.05,
+            ChaosMaxOffset = 0.05,
+            ChaosChance = 0.75,
+            SettleSpeed = 0.001,
+            SettleOnlyMin = false,
             MinOfferPrice = 0.95,
             MaxOfferPrice = 1.1,
             NonUniformPrices = true,
@@ -93,11 +97,13 @@ public class SavedCategoryConfig
     [JsonPropertyName("chaos")] public double? Chaos { get; set; }
     [JsonPropertyName("chaosMinVal")] public double? ChaosMinVal { get; set; }
     [JsonPropertyName("chaosMaxVal")] public double? ChaosMaxVal { get; set; }
+    [JsonPropertyName("chaosMinIter")] public double? ChaosMinIterations { get; set; }
     [JsonPropertyName("chaosMaxIter")] public int? ChaosMaxIterations { get; set; }
     [JsonPropertyName("chaosMinOffset")] public double? ChaosMinOffset { get; set; }
     [JsonPropertyName("chaosMaxOffset")] public double? ChaosMaxOffset { get; set; }
     [JsonPropertyName("chaosChance")] public double? ChaosChance { get; set; }
     [JsonPropertyName("settleSpeed")] public double? SettleSpeed { get; set; }
+    [JsonPropertyName("settleOnlyMin")] public bool? SettleOnlyMin { get; set; }
     [JsonPropertyName("minOfferPrice")] public double? MinOfferPrice { get; set; }
     [JsonPropertyName("maxOfferPrice")] public double? MaxOfferPrice { get; set; }
     [JsonPropertyName("nonUniformPrices")] public bool? NonUniformPrices { get; set; }

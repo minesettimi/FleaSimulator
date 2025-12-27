@@ -38,7 +38,7 @@
     "updateInterp": 30, //how often in minutes the flea market is simulated
     "debug": true,
     "debugSimulation": true,
-    "debugItem": "5c06779c86f77426e00dd782"
+    "debugItem": "5f9949d869e2777a0e779ba5"
   },
   //sets which sim categories apply to which items
   //order is individual -> direct parents -> base classes (order is based on config order NOT hierarchy.)
@@ -121,6 +121,7 @@
       "earlyWipeMult": 3.5,
       "chaos": 0.7,
       "chaosChance": 0.8,
+      "chaosMinIter": 1,
       "chaosMaxIter": 6,
       "demand": 0.7,
       "supply": 0.3
@@ -130,6 +131,7 @@
       "earlyWipeMult": 4.0,
       "chaos": 0.85,
       "chaosChance": 0.9,
+      "chaosMinIter": 1,
       "chaosMaxIter": 10,
       "simChance": 0.85,
       "demand": 0.8,
@@ -142,6 +144,7 @@
       "chaos": 0.95,
       "chaosChance": 0.9,
       "settleSpeed": 0.0001,
+      "chaosMinIter": 1,
       "chaosMaxIter": 20,
       "minOfferPrice": 1.0,
       "maxOfferPrice": 1.4,
@@ -154,9 +157,13 @@
       "valueMult": 1.2,
       "earlyWipeMult": 10.0,
       "chaos": 1.0,
+      "chaosMinVal": 0.85,
+      "chaosMaxVal": 1.3,
       "chaosChance": 1.0,
-      "settleSpeed": 0.5,
-      "chaosMaxIter": 30,
+      "settleSpeed": 1.0,
+      "settleOnlyMin": true,
+      "chaosMinIter": 10,
+      "chaosMaxIter": 25,
       "minOfferPrice": 1.0,
       "maxOfferPrice": 1.4,
       "simChance": 0.05,
@@ -172,11 +179,13 @@
       "chaos": 0.1, //how chaotic an item is, higher values cause the prices to be more unpredictable (0.01 - 1.0)
       "chaosMinVal": 0.9, //how far below the base price can the chaos go (multiplier)
       "chaosMaxVal": 1.1, //how far above the base price can the chaos go 
-      "chaosMaxIter": 3, //max number of times can chaos be applied to an item (rarer each time)
+      "chaosMinIter": 0, //min number of times can chaos be applied to an item (higher numbers are rarer)
+      "chaosMaxIter": 3, //max number of times
       "chaosMinOffset": -0.05, //lowest percentage that values can be offset by chaos
       "chaosMaxOffset": 0.05, //highest percentage
       "chaosChance": 0.75, //chance that chaos effects a property
-      "settleSpeed": 0.025, //percentage speed price returns to normal (1.0 is instant, 0 is never)
+      "settleSpeed": 0.001, //percentage speed price returns to normal (1.0 is instant, 0 is never)
+      "settleOnlyMin": false, //settle only raises prices that drop below minimum
       "minOfferPrice": 0.95, //how far below the base price can offers be placed
       "maxOfferPrice": 1.1, //how far above the bace price can offers be placed
       "nonUniformPrices": true, //should prices be generated with a non-uniform random distribution

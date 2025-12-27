@@ -28,10 +28,6 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Overrides\Sell\" />
-    </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <ItemGroup>

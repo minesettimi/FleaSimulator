@@ -1,3 +1,4 @@
+using FleaSimulator.Overrides.Generators;
 using FleaSimulator.Overrides.Servers;
 using FleaSimulator.Services;
 using SPTarkov.DI.Annotations;
@@ -14,11 +15,13 @@ public class PreLoad(PresetService presetService,
 {
     private readonly List<AbstractPatch> _patches =
     [
-        new UpdateOverride()
+        new UpdateOverride(),
+        new GenerateDynamicOffersOverride() 
     ];
     
     public async Task OnLoad()
     {
+        await presetService.OnLoad();
         
         RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
@@ -32,6 +35,5 @@ public class PreLoad(PresetService presetService,
         foreach (AbstractPatch patch in _patches)
             patch.Enable();
         
-        await presetService.OnLoad();
     }
 }

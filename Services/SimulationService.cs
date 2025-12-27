@@ -81,7 +81,8 @@ public class SimulationService(PresetService preset,
 
         if (itemData.CurrentState.WipeState == WipeState.Middle || (time is not null && itemData.CurrentState.WipeChange < time))
         {
-            settleVal = trueValueDif * chaosHelper.ChaosShift(category, category.SettleSpeed);
+            if (!category.SettleOnlyMin || trueValueDif < 0)
+                settleVal = trueValueDif * chaosHelper.ChaosShift(category, category.SettleSpeed);
         }
         else
         {
@@ -102,9 +103,9 @@ public class SimulationService(PresetService preset,
 
         double chaosClamp = category.ChaosMaxIterations - 1d;
 
-        double shift = Math.Clamp(category.ChaosMaxIterations - category.Chaos - 1d, 1d, chaosClamp);
+        double shift = Math.Clamp(category.ChaosMaxIterations - category.Chaos - category.ChaosMinIterations, category.ChaosMinIterations, chaosClamp);
 
-        double chaosChance = randomUtil.GetBiasedRandomNumber(1d, category.ChaosMaxIterations, 
+        double chaosChance = randomUtil.GetBiasedRandomNumber(category.ChaosMinIterations, category.ChaosMaxIterations, 
             shift, 2d + category.Chaos*2);
 
         int chaosCount = (int)Math.Round(chaosChance);

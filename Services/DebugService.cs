@@ -81,9 +81,14 @@ public class DebugService(PresetService preset,
             testDate = testDate.AddMinutes(preset.Config.Core.UpdateInterp);
         }
 
-        await File.WriteAllTextAsync(Path.Join(preset.ModPath, "debugOutput.csv"), csv.ToString());
+        string debugPath = Path.Join(preset.ModPath, "debug");
+        
+        if (!Directory.Exists(debugPath))
+            Directory.CreateDirectory(debugPath);
+        
+        await File.WriteAllTextAsync(Path.Join(debugPath, $"{preset.Config.Core.DebugItem}.csv"), csv.ToString());
         
         logger.Success($"[FleaSimulator] Debug simulation at state {itemDataService.CurrentState.WipeState} completed " +
-                       $"with {iterationCount} iterations. CSV saved to mod directory");
+                       $"with {iterationCount} iterations. CSV saved to mod/debug directory");
     }
 }
