@@ -16,7 +16,6 @@ public class DebugService(PresetService preset,
     SimulationService simService,
     DatabaseService db,
     ItemDataService itemDataService,
-    ModHelper modHelper,
     ISptLogger<DebugService> logger
     )
 {

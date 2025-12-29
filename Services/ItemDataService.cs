@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Cloners;
 using Path = System.IO.Path;
 
 namespace FleaSimulator.Services;
@@ -17,13 +18,19 @@ public class ItemDataService
         JsonUtil jsonUtil, 
         ISptLogger<ItemDataService> logger,
         DatabaseService databaseService,
-        ItemHelper itemHelper)
+        ItemHelper itemHelper,
+        DatabaseService database,
+        ICloner cloner)
 {
     public SaveState CurrentState;
+    private Dictionary<MongoId, double> originalItems;
     
     public async Task OnLoad()
     {
         SaveState? loadedState = await jsonUtil.DeserializeFromFileAsync<SaveState>(Path.Join(preset.ModPath, "state.json"));
+
+        Dictionary<MongoId, double> priceList = database.GetPrices();
+        originalItems = cloner.Clone(priceList)!;
 
         if (loadedState == null)
         {
@@ -95,8 +102,11 @@ public class ItemDataService
                 continue;
             
             ItemState itemState = new();
-            double originalValue = handbook.Items.SingleOrDefault(i => i.Id == key)?.Price ?? 0;
-            int convertedValue = Convert.ToInt32(Math.Round(originalValue * category.ValueMult));
+            double? liveValue = originalItems.GetValueOrDefault(key);
+                
+            liveValue ??= handbook.Items.SingleOrDefault(i => i.Id == key)?.Price;
+            
+            int convertedValue = Convert.ToInt32(Math.Round(category.ValueMult * liveValue.GetValueOrDefault(0)));
 
             double earlyWipeMult = 1d;
 
