@@ -28,7 +28,6 @@ public class CategoryConfig
     public bool  SettleOnlyMin { get; set; }
     public double MinOfferPrice { get; set; }
     public double MaxOfferPrice { get; set; }
-    public bool NonUniformPrices { get; set; }
     public double Demand { get; set; }
     public double Supply { get; set; }
     public double SimChance { get; set; }
@@ -52,7 +51,6 @@ public class CategoryConfig
             SettleOnlyMin = false,
             MinOfferPrice = 0.95,
             MaxOfferPrice = 1.1,
-            NonUniformPrices = true,
             Demand = 0.5,
             Supply = 0.5,
             SimChance = 1.0
@@ -106,7 +104,6 @@ public class SavedCategoryConfig
     [JsonPropertyName("settleOnlyMin")] public bool? SettleOnlyMin { get; set; }
     [JsonPropertyName("minOfferPrice")] public double? MinOfferPrice { get; set; }
     [JsonPropertyName("maxOfferPrice")] public double? MaxOfferPrice { get; set; }
-    [JsonPropertyName("nonUniformPrices")] public bool? NonUniformPrices { get; set; }
     [JsonPropertyName("demand")] public double? Demand { get; set; }
     [JsonPropertyName("supply")] public double? Supply { get; set; }
     [JsonPropertyName("simChance")] public double? SimChance { get; set; }
