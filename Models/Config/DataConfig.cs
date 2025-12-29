@@ -39,7 +39,7 @@ public class CategoryConfig
         {
             ValueMult = 1.0,
             EarlyWipeMult = 5.0,
-            Chaos = 0.1,
+            Chaos = 0.2,
             ChaosMinVal = 0.9,
             ChaosMaxVal = 1.1,
             ChaosMinIterations = 0,
@@ -47,12 +47,12 @@ public class CategoryConfig
             ChaosMinOffset = -0.05,
             ChaosMaxOffset = 0.05,
             ChaosChance = 0.75,
-            SettleSpeed = 0.001,
+            SettleSpeed = 0.01,
             SettleOnlyMin = false,
             MinOfferPrice = 0.95,
             MaxOfferPrice = 1.1,
             Demand = 0.5,
-            Supply = 0.5,
+            Supply = 0.4,
             SimChance = 1.0
         };
 

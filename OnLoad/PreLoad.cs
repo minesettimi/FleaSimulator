@@ -1,5 +1,6 @@
 using FleaSimulator.Overrides.Generators;
 using FleaSimulator.Overrides.Servers;
+using FleaSimulator.Overrides.Services;
 using FleaSimulator.Services;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
@@ -18,7 +19,8 @@ public class PreLoad(PresetService presetService,
     [
         new UpdateOverride(),
         new CreateOffersFromAssortOverride(),
-        new GenerateDynamicOffersOverride()
+        new GenerateDynamicOffersOverride(),
+        new GetDynamicPriceOverride()
     ];
     
     public async Task OnLoad()

@@ -184,7 +184,7 @@
     {
       "valueMult": 1.0, //multiplies the base game baseline value
       "earlyWipeMult": 5.0, //multiplies the value at the "wipe start", this multiplier is dynamically lowered over time
-      "chaos": 0.25, //how chaotic an item is, higher values cause the prices to be more unpredictable (0.01 - 1.0)
+      "chaos": 0.2, //how chaotic an item is, higher values cause the prices to be more unpredictable (0.01 - 1.0)
       "chaosMinVal": 0.9, //how far below the base price can the chaos go (multiplier)
       "chaosMaxVal": 1.1, //how far above the base price can the chaos go 
       "chaosMinIter": 0, //min number of times can chaos be applied to an item (higher numbers are rarer)
