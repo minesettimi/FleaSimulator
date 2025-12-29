@@ -36,8 +36,7 @@
       "startLength": 10.0 //how long the start of a wipe lasts in days
     },
     "updateInterval": 1, //how often in minutes that all flea market offers are regenerated
-    "updateInterp": 2, //how often in minutes the flea market is simulated
-    "overrideUnreasonablePrices": true, //disables the built in config for capping prices based on base type
+    "updateInterp": 2, //how often in minutes the flea market is simulated    
     "debug": true,
     "debugSimulation": true,
     "debugItem": "5e9dacf986f774054d6b89f4"
@@ -193,11 +192,10 @@
       "chaosMinOffset": -0.05, //lowest percentage that values can be offset by chaos
       "chaosMaxOffset": 0.05, //highest percentage
       "chaosChance": 0.75, //chance that chaos effects a property
-      "settleSpeed": 0.001, //percentage speed price returns to a stable price, higher numbers make prices jump around far less
+      "settleSpeed": 0.01, //percentage speed price returns to a stable price, higher numbers make prices jump around far less
       "settleOnlyMin": false, //settle only raises prices that drop below the true value
       "minOfferPrice": 0.95, //how far below the base price can offers be placed
       "maxOfferPrice": 1.1, //how far above the bace price can offers be placed
-      "nonUniformPrices": true, //should prices be generated with a non-uniform random distribution
       "demand": 0.5, //theoretical demand for the item, does not affect price but changes sell chance (0.01 - 1.0)
       "supply": 0.4, //theoretical supply for the item, does not affect price but changes offer count (0.01 - 1.0)
       "simChance": 1.0 //chance the items prices are simulated
