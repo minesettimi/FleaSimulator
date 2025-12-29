@@ -46,8 +46,10 @@ public class DebugService(PresetService preset,
             logger.Warning("[FleaSimulator] Debug item is blacklisted, cancelling debug simulation.");
             return;
         }
+
+        MongoId id = preset.Config.Core.DebugItem;
         
-        double originalValue = handbook.Items.SingleOrDefault(i => i.Id == preset.Config.Core.DebugItem)?.Price ?? 0;
+        double originalValue = handbook.Items.SingleOrDefault(i => i.Id == id)?.Price ?? 0;
         int convertedValue = Convert.ToInt32(Math.Round(originalValue * category.ValueMult));
 
         double earlyWipeMult = 1d;
@@ -77,7 +79,7 @@ public class DebugService(PresetService preset,
         {
             csv.AppendLine($"{testDate.AddMinutes(preset.Config.Core.UpdateInterp)},{testItem.TruePrice}," +
                            $"{testItem.CurrentPrice},{testItem.TargetPrice}");
-            simService.SimulateItem(testItem, preset.Config.Core.WipePrices.Enabled ? testDate : null);
+            simService.SimulateItem(id, testItem, preset.Config.Core.WipePrices.Enabled ? testDate : null);
             testDate = testDate.AddMinutes(preset.Config.Core.UpdateInterp);
         }
 
@@ -86,7 +88,7 @@ public class DebugService(PresetService preset,
         if (!Directory.Exists(debugPath))
             Directory.CreateDirectory(debugPath);
         
-        await File.WriteAllTextAsync(Path.Join(debugPath, $"{preset.Config.Core.DebugItem}.csv"), csv.ToString());
+        await File.WriteAllTextAsync(Path.Join(debugPath, $"{id}.csv"), csv.ToString());
         
         logger.Success($"[FleaSimulator] Debug simulation at state {itemDataService.CurrentState.WipeState} completed " +
                        $"with {iterationCount} iterations. CSV saved to mod/debug directory");

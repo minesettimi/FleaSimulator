@@ -4,16 +4,17 @@ using SPTarkov.Server.Core.DI;
 
 namespace FleaSimulator.OnLoad;
 
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-public class PostDb(PresetService presetService,
-    ItemDataService dataService,
+[Injectable(TypePriority = OnLoadOrder.RagfairCallbacks - 2)]
+public class PreRagfair(PresetService presetService,
     SimulationService simService,
-    DebugService debug
+    DebugService debug,
+    ItemDataService itemService
     ): IOnLoad
 {
     public async Task OnLoad()
     {
-        await dataService.OnLoad();
+        
+        await itemService.OnLoad();
         await simService.OnLoad();
         
         if (presetService.Config.Core.DebugSimulation)

@@ -4,6 +4,7 @@ using FleaSimulator.Services;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 
@@ -16,7 +17,8 @@ public class PreLoad(PresetService presetService,
     private readonly List<AbstractPatch> _patches =
     [
         new UpdateOverride(),
-        new GenerateDynamicOffersOverride() 
+        new CreateOffersFromAssortOverride(),
+        new GenerateDynamicOffersOverride()
     ];
     
     public async Task OnLoad()
@@ -28,8 +30,21 @@ public class PreLoad(PresetService presetService,
         ragfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice = false;
         
         //completely override refresh system
-        ragfairConfig.RunIntervalSeconds = (int)Math.Round(presetService.Config.Core.UpdateInterval * 60);
+        int refreshInterval = (int)Math.Round(presetService.Config.Core.UpdateInterval * 60);
+        ragfairConfig.RunIntervalSeconds = refreshInterval;
+        ragfairConfig.RunIntervalValues.InRaid = refreshInterval;
+        ragfairConfig.RunIntervalValues.OutOfRaid = refreshInterval;
+        
         ragfairConfig.Dynamic.ExpiredOfferThreshold = 0;
+
+        //disable unreasonable price caps
+        if (presetService.Config.Core.UnreasonablePrices)
+        {
+            foreach (KeyValuePair<MongoId, UnreasonableModPrices> modPrice in ragfairConfig.Dynamic.UnreasonableModPrices)
+            {
+                modPrice.Value.Enabled = false;
+            }
+        }
         
         //enable overrides
         foreach (AbstractPatch patch in _patches)

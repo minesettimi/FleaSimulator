@@ -11,6 +11,7 @@ public class CoreConfig
     [JsonPropertyName("wipePrices")] public WipePriceConfig WipePrices { get; set; } = new();
     [JsonPropertyName("updateInterval")] public double UpdateInterval { get; set; } = 60.0;
     [JsonPropertyName("updateInterp")] public double UpdateInterp { get; set; } = 60.0;
+    [JsonPropertyName("overrideUnreasonablePrices")] public bool UnreasonablePrices { get; set; } = true;
     [JsonPropertyName("debug")] public bool Debug { get; set; } = false;
     [JsonPropertyName("debugSimulation")] public bool DebugSimulation { get; set; } = false;
     [JsonPropertyName("debugItem")] public string DebugItem { get; set; } = "";
@@ -20,6 +21,7 @@ public class BuyConfig
 {
     [JsonPropertyName("enabled")] public bool Enabled { get; set; } = true;
     [JsonPropertyName("chaos")] public bool Chaos { get; set; } = true;
+    [JsonPropertyName("canHaveNoOffers")] public bool CanHaveNoOffers { get; set; } = true;
     [JsonPropertyName("supplyMinOffers")] public int SupplyMinOffers { get; set; } = 2;
     [JsonPropertyName("supplyMaxOffers")] public int SupplyMaxOffers { get; set; } = 20;
     [JsonPropertyName("supplyOfferOffset")] public int SupplyOfferOffset { get; set; } = 1;

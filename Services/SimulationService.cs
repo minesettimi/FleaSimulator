@@ -2,8 +2,11 @@ using FleaSimulator.Helpers;
 using FleaSimulator.Models.Config;
 using FleaSimulator.Models.State;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 
 namespace FleaSimulator.Services;
@@ -13,10 +16,12 @@ public class SimulationService(PresetService preset,
     ItemDataService itemData,
     ChaosHelper chaosHelper,
     RandomUtil randomUtil,
-    MathUtil mathUtil,
+    TraderHelper traderHelper,
+    ConfigServer configServer,
     ISptLogger<SimulationService> logger)
 {
-    public Timer SimulationTimer;
+    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    private Timer SimulationTimer;
     
     public Task OnLoad()
     {   
@@ -51,7 +56,7 @@ public class SimulationService(PresetService preset,
         
         foreach ((MongoId key, ItemState item) in state.Items)
         {
-            SimulateItem(item);
+            SimulateItem(key, item);
         }
         
         state.LastUpdate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -65,7 +70,7 @@ public class SimulationService(PresetService preset,
         logger.Info($"[FleaSimulator] Finished simulation in {endTime - startTime}ms.");
     }
 
-    public void SimulateItem(ItemState item, DateTime? time = null)
+    public void SimulateItem(MongoId id, ItemState item, DateTime? time = null)
     {
         CategoryConfig category = item.Category;
         
@@ -100,6 +105,14 @@ public class SimulationService(PresetService preset,
         }
             
         item.TargetPrice -= (int)Math.Round(settleVal);
+        
+        //cap out prices based on configuration
+        if (_ragfairConfig.Dynamic.UseTraderPriceForOffersIfHigher)
+        {
+            double tradePrice = traderHelper.GetHighestSellToTraderPrice(id);
+            if (tradePrice > item.TargetPrice)
+                item.TargetPrice = (int)Math.Round(tradePrice);
+        }
 
         double chaosClamp = category.ChaosMaxIterations - 1d;
 

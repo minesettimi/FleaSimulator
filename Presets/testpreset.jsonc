@@ -10,9 +10,10 @@
     {
       "enabled": true,
       "chaos": true, //can buy values be altered by chaos
+      "canHaveNoOffers": true, //can an item generate no offers
       "supplyMinOffers": 2, //offers available for items at minimum supply (0.01) 
       "supplyMaxOffers": 20, //offers available at maximum supply (1.0)
-      "supplyOfferOffset": 1, //+- to the offer count by rng
+      "supplyOfferOffset": 3, //+- to the offer count by rng
       "demandMinSoldChance": 0.0, //chance that an item has already been sold when purchased when demand is at minimum (0.01)
       "demandMaxSoldChance": 0.85 //chance when demand is at maximum (1.0)
     },
@@ -34,11 +35,12 @@
       "enabled": true,
       "startLength": 10.0 //how long the start of a wipe lasts in days
     },
-    "updateInterval": 15, //how often in minutes that flea market offers are updated
-    "updateInterp": 30, //how often in minutes the flea market is simulated
+    "updateInterval": 1, //how often in minutes that all flea market offers are regenerated
+    "updateInterp": 2, //how often in minutes the flea market is simulated
+    "overrideUnreasonablePrices": true, //disables the built in config for capping prices based on base type
     "debug": true,
     "debugSimulation": true,
-    "debugItem": "5f9949d869e2777a0e779ba5"
+    "debugItem": "5e9dacf986f774054d6b89f4"
   },
   //sets which sim categories apply to which items
   //order is individual -> direct parents -> base classes (order is based on config order NOT hierarchy.)
@@ -51,6 +53,7 @@
       "55818aeb4bdc2ddc698b456a": "ExtremelyRare", //specialty scopes
       "57864a66245977548f04a81f": "Hideout", //electronics
       "57864ada245977548638de91": "Hideout", //building material
+      "57864e4c24597754843f8723": "Hideout", //flammables
       "5c99f98d86f7745c314214b3": "Common", //mechanical keys
       "5c164d2286f774194c5e69fa": "ExtremelyRare", //keycards
       "57864c8c245977548867e7f1": "Medical", //medical supplies
@@ -60,7 +63,9 @@
       "5448e54d4bdc2dcc718b4568": "Rare", //armour
       "644120aa86ffbe10ee032b6f": "SuperRare", //armored plates
       "5448e53e4bdc2d60728b4567": "Rare", //backpacks
-      "5448fe124bdc2da5018b4567": "Common" //weapon mods
+      "57bef4c42459772e8d35a53b": "Rare", //armored equipment
+      "5448fe124bdc2da5018b4567": "Common", //weapon mods
+      "5485a8684bdc2da71d8b4567": "Rare" //ammo
       
     },
     //categories for specific items, this overrides categories
@@ -78,6 +83,9 @@
       //cheaper cases
       "5aafbde786f774389d0cbc0f": "Rare",
       "590c60fc86f77412b13fddcf": "Rare",
+      
+      //electronics
+      "57347ca924597744596b4e71": "SuperRare",
       
       //keys vary wildly, add any keys that aren't worthless here
       //marked keys
@@ -113,6 +121,7 @@
       "chaosChance": 0.65,
       "minOfferPrice": 0.9,
       "maxOfferPrice": 1.2,
+      "settleSpeed": 0.01,
       "demand": 0.8,
       "supply": 0.8
     },
@@ -150,12 +159,12 @@
       "maxOfferPrice": 1.4,
       "simChance": 0.45,
       "demand": 0.8,
-      "supply": 0.3
+      "supply": 0.15
     },
     "OmegaRare":
     {
       "valueMult": 1.2,
-      "earlyWipeMult": 10.0,
+      "earlyWipeMult": 15.0,
       "chaos": 1.0,
       "chaosMinVal": 0.85,
       "chaosMaxVal": 1.3,
@@ -176,7 +185,7 @@
     {
       "valueMult": 1.0, //multiplies the base game baseline value
       "earlyWipeMult": 5.0, //multiplies the value at the "wipe start", this multiplier is dynamically lowered over time
-      "chaos": 0.1, //how chaotic an item is, higher values cause the prices to be more unpredictable (0.01 - 1.0)
+      "chaos": 0.25, //how chaotic an item is, higher values cause the prices to be more unpredictable (0.01 - 1.0)
       "chaosMinVal": 0.9, //how far below the base price can the chaos go (multiplier)
       "chaosMaxVal": 1.1, //how far above the base price can the chaos go 
       "chaosMinIter": 0, //min number of times can chaos be applied to an item (higher numbers are rarer)
@@ -184,13 +193,13 @@
       "chaosMinOffset": -0.05, //lowest percentage that values can be offset by chaos
       "chaosMaxOffset": 0.05, //highest percentage
       "chaosChance": 0.75, //chance that chaos effects a property
-      "settleSpeed": 0.001, //percentage speed price returns to normal (1.0 is instant, 0 is never)
-      "settleOnlyMin": false, //settle only raises prices that drop below minimum
+      "settleSpeed": 0.001, //percentage speed price returns to a stable price, higher numbers make prices jump around far less
+      "settleOnlyMin": false, //settle only raises prices that drop below the true value
       "minOfferPrice": 0.95, //how far below the base price can offers be placed
       "maxOfferPrice": 1.1, //how far above the bace price can offers be placed
       "nonUniformPrices": true, //should prices be generated with a non-uniform random distribution
       "demand": 0.5, //theoretical demand for the item, does not affect price but changes sell chance (0.01 - 1.0)
-      "supply": 0.5, //theoretical supply for the item, does not affect price but changes offer count (0.01 - 1.0)
+      "supply": 0.4, //theoretical supply for the item, does not affect price but changes offer count (0.01 - 1.0)
       "simChance": 1.0 //chance the items prices are simulated
     }
   }
