@@ -1,4 +1,5 @@
 using FleaSimulator.Overrides.Generators;
+using FleaSimulator.Overrides.Helpers;
 using FleaSimulator.Overrides.Servers;
 using FleaSimulator.Overrides.Services;
 using FleaSimulator.Services;
@@ -20,7 +21,8 @@ public class PreLoad(PresetService presetService,
         new UpdateOverride(),
         new CreateOffersFromAssortOverride(),
         new GenerateDynamicOffersOverride(),
-        new GetDynamicPriceOverride()
+        new GetDynamicPriceOverride(),
+        new CalculateStackCountOverride()
     ];
     
     public async Task OnLoad()

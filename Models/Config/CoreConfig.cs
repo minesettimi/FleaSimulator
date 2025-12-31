@@ -20,13 +20,14 @@ public class CoreConfig
 public class BuyConfig
 {
     [JsonPropertyName("enabled")] public bool Enabled { get; set; } = true;
-    [JsonPropertyName("chaos")] public bool Chaos { get; set; } = true;
     [JsonPropertyName("canHaveNoOffers")] public bool CanHaveNoOffers { get; set; } = true;
     [JsonPropertyName("supplyMinOffers")] public int SupplyMinOffers { get; set; } = 2;
     [JsonPropertyName("supplyMaxOffers")] public int SupplyMaxOffers { get; set; } = 20;
     [JsonPropertyName("supplyOfferOffset")] public int SupplyOfferOffset { get; set; } = 1;
-    [JsonPropertyName("demandMinSoldChance")] public double DemandMinSoldChance { get; set; } = 0.0;
-    [JsonPropertyName("demandMaxSoldChance")] public double DemandMaxSoldChance { get; set; } = 0.85;
+    [JsonPropertyName("supplyMinQuantity")] public int SupplyMinQuantity { get; set; } = 1;
+    [JsonPropertyName("supplyMaxQuantity")] public int SupplyMaxQuantity { get; set; } = 5;
+    //[JsonPropertyName("demandMinSoldChance")] public double DemandMinSoldChance { get; set; } = 0.0;
+    //[JsonPropertyName("demandMaxSoldChance")] public double DemandMaxSoldChance { get; set; } = 0.85;
 }
 
 public class SellConfig
@@ -45,4 +46,5 @@ public class WipePriceConfig
 {
     [JsonPropertyName("enabled")] public bool Enabled { get; set; }
     [JsonPropertyName("startLength")] public double StartLength { get; set; }
+    [JsonPropertyName("earlyQuantityMult")] public double EarlyQuantityMult { get; set; } = 0.5;
 }

@@ -1,6 +1,7 @@
 using System.Reflection;
 using FleaSimulator.Models.Config;
 using FleaSimulator.Models.State;
+using FleaSimulator.Services;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -12,10 +13,10 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 
-namespace FleaSimulator.Services;
+namespace FleaSimulator.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class PriceService(DatabaseService database,
+public class OfferHelper(DatabaseService database,
     ItemDataService dataService,
     MathUtil mathUtil,
     RagfairPriceService ragfairPriceService,
@@ -25,7 +26,9 @@ public class PriceService(DatabaseService database,
     RandomUtil randomUtil,
     ItemDataService itemService,
     ItemHelper itemHelper,
-    ISptLogger<PriceService> logger
+    PresetService presetService,
+    ChaosHelper chaosHelper,
+    ISptLogger<OfferHelper> logger
     )
 {
     private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
@@ -56,7 +59,7 @@ public class PriceService(DatabaseService database,
         }
     }
 
-    public double GetItemPrice(MongoId tplId,
+    public double? GetItemPrice(MongoId tplId,
         MongoId desiredCurrency,
         Item? item,
         IEnumerable<Item>? offerItems,
@@ -78,7 +81,13 @@ public class PriceService(DatabaseService database,
             price *= qualityModifier;
         }
         
-        ItemState itemState = itemService.CurrentState.Items[tplId];
+        ItemState? itemState = itemService.CurrentState.Items.GetValueOrDefault(tplId);
+
+        if (itemState is null)
+        {
+            return null;
+        }
+        
         CategoryConfig category = itemState.Category;
 
         double minPrice = category.MinOfferPrice * 100;
@@ -97,5 +106,46 @@ public class PriceService(DatabaseService database,
         }
         
         return price <= 0 ? 0.1d : price;
+    }
+
+    public bool ShouldModifyQuantity(MongoId tplId, bool isPreset)
+    {
+        KeyValuePair<bool, TemplateItem?> itemDetails = itemHelper.GetItem(tplId);
+        if (!itemDetails.Key)
+            return false;
+
+        if (isPreset || itemHelper.IsOfBaseclasses(itemDetails.Value!.Id, _ragfairConfig.Dynamic.ShowAsSingleStack))
+            return false;
+
+        int stackSize = itemDetails.Value?.Properties?.StackMaxSize ?? 1;
+        
+        return stackSize == 1;
+    }
+
+    public int GetItemQuantity(MongoId tplId)
+    {
+        ItemState? itemState = itemService.CurrentState.Items.GetValueOrDefault(tplId);
+
+        if (itemState is null)
+            return -1;
+        
+        CategoryConfig category = itemState.Category;
+        BuyConfig buyConfig = presetService.Config.Core.BuyConfig;
+
+        double configQuantity = chaosHelper.MapToRange01(category.Supply, buyConfig.SupplyMinQuantity, buyConfig.SupplyMaxQuantity);
+
+        double altered = randomUtil.GetBiasedRandomNumber(1.0, configQuantity + 1d, configQuantity, 4.0);
+
+        return (int)Math.Max(Math.Floor(altered), 1);
+    }
+
+    public int ModifyWipeQuantity(int quantity)
+    {
+        if (dataService.CurrentState.WipeState == WipeState.Middle)
+            return quantity;
+
+        double resultQuantity = quantity * presetService.Config.Core.WipePrices.EarlyQuantityMult;
+        
+        return (int)Math.Max(Math.Round(resultQuantity), 1);
     }
 }

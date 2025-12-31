@@ -9,13 +9,12 @@
     "buy":
     {
       "enabled": true,
-      "chaos": true, //can buy values be altered by chaos
       "canHaveNoOffers": true, //can an item generate no offers
       "supplyMinOffers": 2, //offers available for items at minimum supply (0.01) 
       "supplyMaxOffers": 20, //offers available at maximum supply (1.0)
       "supplyOfferOffset": 3, //+- to the offer count by rng
-      "demandMinSoldChance": 0.0, //chance that an item has already been sold when purchased when demand is at minimum (0.01)
-      "demandMaxSoldChance": 0.85 //chance when demand is at maximum (1.0)
+      "supplyMinQuantity": 1, //average quantity of an non-stackable item at lowest supply
+      "supplyMaxQuantity": 5 //average quantity at highest
     },
     //configuration for players selling on the flea
     "sell":
@@ -32,8 +31,9 @@
     //progression of prices over a simulated wipe (THIS DOES !NOT! WIPE YOUR CHARACTER!)
     "wipePrices":
     {
-      "enabled": true,
-      "startLength": 10.0 //how long the start of a wipe lasts in days
+      "enabled": false,
+      "startLength": 10.0, //how long the start of a wipe lasts in days
+      "earlyQuantityMult": 0.2 //multiplier to item quantity during early wipe, minimum is 1
     },
     "updateInterval": 1, //how often in minutes that all flea market offers are regenerated
     "updateInterp": 2, //how often in minutes the flea market is simulated    

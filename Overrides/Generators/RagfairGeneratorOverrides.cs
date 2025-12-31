@@ -1,5 +1,6 @@
 using System.Reflection;
 using FleaSimulator.Generators;
+using FleaSimulator.Helpers;
 using FleaSimulator.Models.State;
 using FleaSimulator.Services;
 using SPTarkov.Reflection.Patching;
@@ -39,18 +40,18 @@ public class CreateOffersFromAssortOverride : AbstractPatch
 
 public class GenerateDynamicOffersOverride : AbstractPatch
 {
-    private static PriceService priceService;
+    private static OfferHelper _offerHelper;
     
     protected override MethodBase? GetTargetMethod()
     {
-        priceService = ServiceLocator.ServiceProvider.GetService<PriceService>()!;
+        _offerHelper = ServiceLocator.ServiceProvider.GetService<OfferHelper>()!;
         return typeof(RagfairOfferGenerator).GetMethod(nameof(RagfairOfferGenerator.GenerateDynamicOffers));
     }
 
     [PatchPrefix]
     public static bool Prefix()
     {
-        priceService.UpdatePrices();
+        _offerHelper.UpdatePrices();
         
         return true;
     }

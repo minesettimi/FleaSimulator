@@ -1,4 +1,5 @@
 using System.Reflection;
+using FleaSimulator.Helpers;
 using FleaSimulator.Services;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
@@ -11,30 +12,36 @@ namespace FleaSimulator.Overrides.Services;
 
 public class GetDynamicPriceOverride : AbstractPatch
 {
-    private static PriceService priceService;
+    private static OfferHelper offerHelper;
     private static PresetService presetService;
     
     protected override MethodBase? GetTargetMethod()
     {
-        priceService = ServiceLocator.ServiceProvider.GetService<PriceService>()!;
+        offerHelper = ServiceLocator.ServiceProvider.GetService<OfferHelper>()!;
         presetService = ServiceLocator.ServiceProvider.GetService<PresetService>()!;
         return typeof(RagfairPriceService).GetMethod(nameof(RagfairPriceService.GetDynamicItemPrice));
     }
     
     //can't override the middle and the functions used don't have enough params, replace it
     [PatchPrefix]
-    public static bool PatchPrefixAttribute(MongoId tplId,
+    public static bool Prefix(MongoId itemTemplateId,
         MongoId desiredCurrency,
         Item? item,
         IEnumerable<Item>? offerItems,
         bool? isPackOffer,
-        ref double __result
+        ref double? __result
         )
     {
         if (!presetService.Config.Core.BuyConfig.Enabled)
             return true;
             
-        __result = priceService.GetItemPrice(tplId, desiredCurrency, item, offerItems, isPackOffer);
+        double? price = offerHelper.GetItemPrice(itemTemplateId, desiredCurrency, item, offerItems, isPackOffer);
+
+        //item was invalid or some other issue, run original service.
+        if (price is null)
+            return true;
+        
+        __result = price;
         
         return false;
     }
