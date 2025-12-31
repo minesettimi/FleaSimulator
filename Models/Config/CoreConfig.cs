@@ -10,7 +10,7 @@ public class CoreConfig
     [JsonPropertyName("sellConfig")] public SellConfig SellConfig { get; set; } = new();
     [JsonPropertyName("wipePrices")] public WipePriceConfig WipePrices { get; set; } = new();
     [JsonPropertyName("updateInterval")] public double UpdateInterval { get; set; } = 60.0;
-    [JsonPropertyName("updateInterp")] public double UpdateInterp { get; set; } = 60.0;
+    [JsonPropertyName("simInterval")] public double SimulationInterval { get; set; } = 60.0;
     [JsonPropertyName("overrideUnreasonablePrices")] public bool UnreasonablePrices { get; set; } = true;
     [JsonPropertyName("debug")] public bool Debug { get; set; } = false;
     [JsonPropertyName("debugSimulation")] public bool DebugSimulation { get; set; } = false;

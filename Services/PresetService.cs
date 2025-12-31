@@ -58,10 +58,16 @@ public class PresetService
     {
         CoreConfig coreConfig = Config.Core;
         
-        if (coreConfig.UpdateInterval > coreConfig.UpdateInterp)
+        if (coreConfig.UpdateInterval <= 0)
         {
-            logger.Warning("[FleaSimulator] Update interval greater than the update interp! Clamping.");
-            coreConfig.UpdateInterval = coreConfig.UpdateInterp;
+            logger.Warning("[FleaSimulator] Update interval is too low! Setting to 1.");
+            coreConfig.UpdateInterval = 1;
+        }
+
+        if (coreConfig.SimulationInterval <= 0)
+        {
+            logger.Warning("[FleaSimulator] Simulation interval is too low! Setting to 1.");
+            coreConfig.SimulationInterval = 1;
         }
 
         if (!Config.SavedCategories.TryGetValue("Default", out SavedCategoryConfig? category))

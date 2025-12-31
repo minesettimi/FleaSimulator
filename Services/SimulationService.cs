@@ -31,9 +31,9 @@ public class SimulationService(PresetService preset,
         SimulationTimer = new Timer(_ =>
         {
             SimulateMarket();
-        }, null, TimeSpan.FromSeconds(updateLeft), TimeSpan.FromMinutes(preset.Config.Core.UpdateInterp));
+        }, null, TimeSpan.FromSeconds(updateLeft), TimeSpan.FromMinutes(preset.Config.Core.SimulationInterval));
         
-        logger.Debug($"[FleaSimulator] Starting timer in {updateLeft}s with a {(long)Math.Round(preset.Config.Core.UpdateInterp * 60)}s interval");
+        logger.Debug($"[FleaSimulator] Starting timer in {updateLeft}s with a {(long)Math.Round(preset.Config.Core.SimulationInterval * 60)}s interval");
         
         return Task.CompletedTask;
     }
@@ -61,7 +61,7 @@ public class SimulationService(PresetService preset,
         
         state.LastUpdate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         state.UpdateTime = state.LastUpdate;
-        state.NextUpdate = state.LastUpdate + (long)Math.Round(preset.Config.Core.UpdateInterp * 60);
+        state.NextUpdate = state.LastUpdate + (long)Math.Round(preset.Config.Core.SimulationInterval * 60);
         
         itemData.SaveCurrentState();
         
@@ -94,7 +94,7 @@ public class SimulationService(PresetService preset,
             //calculate early wipe multiplier
             double diffPercent = item.CurrentPrice / (double)item.TruePrice;
             double iterationsLeft = (itemData.CurrentState.WipeChange - (time ?? DateTime.Now)).TotalMinutes;
-            iterationsLeft /= preset.Config.Core.UpdateInterp;
+            iterationsLeft /= preset.Config.Core.SimulationInterval;
             iterationsLeft = Math.Ceiling(iterationsLeft);
 
             double iterPercentage = 1 / iterationsLeft;

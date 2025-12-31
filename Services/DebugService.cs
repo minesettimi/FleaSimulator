@@ -64,7 +64,7 @@ public class DebugService(PresetService preset,
         testItem.TargetPrice = startingPrice;
 
         double totalTime = TimeSpan.FromDays(30 * 3).TotalMinutes;
-        totalTime /= preset.Config.Core.UpdateInterp;
+        totalTime /= preset.Config.Core.SimulationInterval;
 
         int iterationCount = (int)Math.Round(totalTime);
         
@@ -76,10 +76,10 @@ public class DebugService(PresetService preset,
 
         for (int i = 0; i < iterationCount; i++)
         {
-            csv.AppendLine($"{testDate.AddMinutes(preset.Config.Core.UpdateInterp)},{testItem.TruePrice}," +
+            csv.AppendLine($"{testDate.AddMinutes(preset.Config.Core.SimulationInterval)},{testItem.TruePrice}," +
                            $"{testItem.CurrentPrice},{testItem.TargetPrice}");
             simService.SimulateItem(id, testItem, preset.Config.Core.WipePrices.Enabled ? testDate : null);
-            testDate = testDate.AddMinutes(preset.Config.Core.UpdateInterp);
+            testDate = testDate.AddMinutes(preset.Config.Core.SimulationInterval);
         }
 
         string debugPath = Path.Join(preset.ModPath, "debug");

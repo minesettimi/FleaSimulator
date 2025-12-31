@@ -35,7 +35,7 @@
       "earlyQuantityMult": 0.2 //multiplier to item quantity during early wipe, minimum is 1
     },
     "updateInterval": 1, //how often in minutes that all flea market offers are regenerated
-    "updateInterp": 2, //how often in minutes the flea market is simulated    
+    "simInterval": 2, //how often in minutes the flea market is simulated    
     "debug": true,
     "debugSimulation": true,
     "debugItem": "5e9dacf986f774054d6b89f4"
