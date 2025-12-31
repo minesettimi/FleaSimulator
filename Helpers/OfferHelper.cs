@@ -81,7 +81,7 @@ public class OfferHelper(DatabaseService database,
             price *= qualityModifier;
         }
         
-        ItemState? itemState = itemService.CurrentState.Items.GetValueOrDefault(tplId);
+        itemService.CurrentState.Items.TryGetValue(tplId, out ItemState? itemState);
 
         if (itemState is null)
         {
@@ -93,10 +93,10 @@ public class OfferHelper(DatabaseService database,
         double minPrice = category.MinOfferPrice * 100;
         double maxPrice = category.MaxOfferPrice * 100;
 
-        double multiplier = randomUtil.GetBiasedRandomNumber(minPrice, 
-            maxPrice,
-            maxPrice - minPrice - category.Chaos,
-            2d + category.Chaos*2);
+        double dif = maxPrice - minPrice;
+        double middle = dif * 0.5;
+        
+        double multiplier = randomUtil.GetNormallyDistributedRandomNumber(minPrice + middle, middle * 0.5 - 1);
         
         price *= multiplier / 100;
 
