@@ -20,25 +20,26 @@
     {
       "enabled": true,
       "chaos": true, //can sell values be altered by chaos
-      "supplyMinPosition": 2, //highest position in the flea list for an item to be 0% sell chance at minimum supply (0.01)
+      "supplyMinPosition": 2, //highest position in the flea list for an item to be 0% sell chance at minimum supply starting from 0 (0.01)
       "supplyMaxPosition": 10, //position in the flea at maximum supply (1.0)
       "demandMinBuyChance": 10.0, //chance an item is bought at the lowest position when at minimum demand (0.01) 
       "demandMaxBuyChance": 100.0, //chance at maximum demand (1.0)
-      "demandMinDelay": 3600.0, //baseline delay for an item to be sold when at minimum demand (0.01)
-      "demandMaxDelay": 0.0 //baseline delay at maximum demand (1.0)
+      "demandMinDelay": 3600, //max delay for an item to be sold when at minimum demand in seconds (0.01)
+      "demandMaxDelay": 0, //max delay at maximum demand (1.0)
+      "posDelay": 30 //how many seconds to add to the delay for each position past 0
     },
     //progression of prices over a simulated wipe (THIS DOES !NOT! WIPE YOUR CHARACTER!)
     "wipePrices":
     {
-      "enabled": false,
+      "enabled": true,
       "startLength": 10.0, //how long the start of a wipe lasts in days
       "earlyQuantityMult": 0.2 //multiplier to item quantity during early wipe, minimum is 1
     },
-    "updateInterval": 1, //how often in minutes that all flea market offers are regenerated
-    "simInterval": 2, //how often in minutes the flea market is simulated    
+    "updateInterval": 15, //how often in minutes that all flea market offers are regenerated
+    "simInterval": 30, //how often in minutes the flea market is simulated    
     "debug": true,
     "debugSimulation": true,
-    "debugItem": "5e9dacf986f774054d6b89f4"
+    "debugItem": "5d1b2f3f86f774252167a52c"
   },
   //sets which sim categories apply to which items
   //order is individual -> direct parents -> base classes (order is based on config order NOT hierarchy.)
@@ -52,8 +53,9 @@
       "57864a66245977548f04a81f": "Hideout", //electronics
       "57864ada245977548638de91": "Hideout", //building material
       "57864e4c24597754843f8723": "Hideout", //flammables
-      "5c99f98d86f7745c314214b3": "Common", //mechanical keys
+      "5c99f98d86f7745c314214b3": "Keys", //mechanical keys
       "5c164d2286f774194c5e69fa": "ExtremelyRare", //keycards
+      "543be6674bdc2df1348b4569": "Food", //food and drinks
       "57864c8c245977548867e7f1": "Medical", //medical supplies
       "5795f317245977243854e041": "SuperRare", //cases
       "5447e1d04bdc2dff2f8b4567": "Rare", //knives
@@ -63,7 +65,8 @@
       "5448e53e4bdc2d60728b4567": "Rare", //backpacks
       "57bef4c42459772e8d35a53b": "Rare", //armored equipment
       "5448fe124bdc2da5018b4567": "Common", //weapon mods
-      "5485a8684bdc2da71d8b4567": "Rare" //ammo
+      "5485a8684bdc2da71d8b4567": "Rare", //ammo
+      "590c745b86f7743cc433c5f2": "Crafting" //other
       
     },
     //categories for specific items, this overrides categories
@@ -71,6 +74,13 @@
     {
       //medical
       "5c0530ee86f774697952d952": "ExtremelyRare",
+      "5af0534a86f7743b6f354284": "SuperRare",
+      
+      //foods
+      "59e3577886f774176a362503": "LateHideout",
+      
+      //water
+      "5d1b33a686f7742523398398": "Hideout",
       
       //knives
       "5c0126f40db834002a125382": "OmegaRare",
@@ -85,18 +95,38 @@
       //electronics
       "57347ca924597744596b4e71": "SuperRare",
       
-      //keys vary wildly, add any keys that aren't worthless here
+      //other
+      "5d1b2f3f86f774252167a52c": "LateHideout",
+      "5d1b385e86f774252167b98a": "LateHideout",
+      
+      //keys vary wildly, add any keys that don't fit the standard preset
       //marked keys
-      "5780cf7f2459777de4559322": "ExtremelyRare",
+      "5780cf7f2459777de4559322": "OmegaRare",
       "5d80c62a86f7744036212b3f": "ExtremelyRare",
       "5d80c60f86f77440373c4ece": "ExtremelyRare",
       "5ede7a8229445733cb4c18e2": "ExtremelyRare",
       "62987dfc402c7f69bf010923": "ExtremelyRare",
       "63a3a93f8a56922e82001f5d": "ExtremelyRare",
       
-      //other high priority
+      //reserve
+      "5d9f1fa686f774726974a992": "SuperRare",
+      
+      //interchange
       "5ad5d7d286f77450166e0a89": "SuperRare",
-      "6582dbf0b8d7830efc45016f": "SuperRare"
+      
+      //streets
+      "6582dbf0b8d7830efc45016f": "SuperRare",
+      
+      //shoreline
+      
+      
+      //nowhere keys
+      "5913651986f774432f15d132": "Common",
+      
+      //some keycards are valued worse
+      //interchange cards
+      "5e42c81886f7742a01529f57": "Rare",
+      "5e42c83786f7742a021fdf3c": "Rare"
     }
   },
   //categories for different simulation behaviors
@@ -117,11 +147,52 @@
       "chaos": 0.5,
       "earlyWipeMult": 8.0,
       "chaosChance": 0.65,
-      "minOfferPrice": 0.9,
+      "minOfferPrice": 0.85,
       "maxOfferPrice": 1.2,
       "settleSpeed": 0.01,
+      "demand": 0.6,
+      "supply": 0.8
+    },
+    "Crafting":
+    {
+      "valueMult": 1.1,
+      "earlyWipeMult": 1.5,
+      "chaos": 0.75,
+      "chaosChance": 0.75,
+      "chaosMinIter": 2,
+      "chaosMaxIter": 5,
+      "minOfferPrice": 0.9,
+      "maxOfferPrice": 1.2,
       "demand": 0.8,
       "supply": 0.8
+    },
+    "LateHideout":
+    {
+      "valueMult": 1.2,
+      "earlyWipeMult": 0.15,
+      "chaos": 0.8,
+      "chaosChance": 0.8,
+      "chaosMinIter": 3,
+      "settleSpeed": 0,
+      "settleOnlyMin": true,
+      "chaosMaxIter": 10,
+      "minOfferPrice": 0.95,
+      "maxOfferPrice": 1.2,
+      "demand": 1.0,
+      "supply": 0.7
+    },
+    "Keys":
+    {
+      "earlyWipeMult": 4,
+      "chaos": 0.9,
+      "chaosChance": 0.9,
+      "chaosMinIter": 2,
+      "chaosMaxIter": 15,
+      "minOfferPrice": 1.0,
+      "settleSpeed": 0.015,
+      "maxOfferPrice": 1.1,
+      "demand": 0.85,
+      "supply": 0.7
     },
     "Rare":
     {
@@ -138,7 +209,7 @@
       "earlyWipeMult": 4.0,
       "chaos": 0.85,
       "chaosChance": 0.9,
-      "chaosMinIter": 1,
+      "chaosMinIter": 2,
       "chaosMaxIter": 10,
       "simChance": 0.85,
       "demand": 0.8,
@@ -152,9 +223,11 @@
       "chaosChance": 0.9,
       "settleSpeed": 0.0001,
       "chaosMinIter": 1,
-      "chaosMaxIter": 20,
+      "chaosMaxIter": 15,
+      "chaosMinOffset": -0.1,
+      "chaosMaxOffset": 0.1,
       "minOfferPrice": 1.0,
-      "maxOfferPrice": 1.4,
+      "maxOfferPrice": 1.1,
       "simChance": 0.45,
       "demand": 0.8,
       "supply": 0.15
@@ -169,10 +242,12 @@
       "chaosChance": 1.0,
       "settleSpeed": 1.0,
       "settleOnlyMin": true,
-      "chaosMinIter": 10,
-      "chaosMaxIter": 25,
+      "chaosMinIter": 2,
+      "chaosMaxIter": 10,
+      "chaosMinOffset": -0.2,
+      "chaosMaxOffset": 0.2,
       "minOfferPrice": 1.0,
-      "maxOfferPrice": 1.4,
+      "maxOfferPrice": 1.2,
       "simChance": 0.05,
       "demand": 1.0,
       "supply": 0.01
@@ -191,7 +266,7 @@
       "chaosMinOffset": -0.05, //lowest percentage that values can be offset by chaos
       "chaosMaxOffset": 0.05, //highest percentage
       "chaosChance": 0.75, //chance that chaos effects a property
-      "settleSpeed": 0.01, //percentage speed price returns to a stable price, higher numbers make prices jump around far less
+      "settleSpeed": 0.002, //percentage speed price returns to a stable price, higher numbers make prices jump around far less
       "settleOnlyMin": false, //settle only raises prices that drop below the true value
       "minOfferPrice": 0.95, //how far below the base price can offers be placed
       "maxOfferPrice": 1.1, //how far above the bace price can offers be placed

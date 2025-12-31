@@ -32,7 +32,7 @@ public class OfferHelper(DatabaseService database,
     )
 {
     private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    private MethodBase _getWeaponPresetprice = typeof(RagfairPriceService)
+    private readonly MethodBase _getWeaponPresetprice = typeof(RagfairPriceService)
         .GetMethod("GetWeaponPresetPrice", BindingFlags.Instance | BindingFlags.NonPublic)!;
     
     public void UpdatePrices()
@@ -134,7 +134,7 @@ public class OfferHelper(DatabaseService database,
 
         double configQuantity = chaosHelper.MapToRange01(category.Supply, buyConfig.SupplyMinQuantity, buyConfig.SupplyMaxQuantity);
 
-        double altered = randomUtil.GetBiasedRandomNumber(1.0, configQuantity + 1d, configQuantity, 4.0);
+        double altered = randomUtil.GetBiasedRandomNumber(1.0, configQuantity + 1d, configQuantity - 2d, 4.0);
 
         return (int)Math.Max(Math.Floor(altered), 1);
     }

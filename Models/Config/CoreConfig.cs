@@ -37,8 +37,9 @@ public class SellConfig
     [JsonPropertyName("supplyMaxPosition")] public int SupplyMaxPosition { get; set; } = 10;
     [JsonPropertyName("demandMinBuyChance")] public double DemandMinBuyChance { get; set; } = 10.0;
     [JsonPropertyName("demandMaxBuyChance")] public double DemandMaxBuyChance { get; set; } = 100.0;
-    [JsonPropertyName("demandMinDelay")] public double DemandMinDelay { get; set; } = 3600.0;
-    [JsonPropertyName("demandMaxDelay")] public double DemandMaxDelay { get; set; } = 0.0;
+    [JsonPropertyName("demandMinDelay")] public int DemandMinDelay { get; set; } = 3600;
+    [JsonPropertyName("demandMaxDelay")] public int DemandMaxDelay { get; set; } = 0;
+    [JsonPropertyName("posDelay")] public int PosDelay { get; set; } = 30;
 }
 
 public class WipePriceConfig
