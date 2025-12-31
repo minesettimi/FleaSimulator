@@ -33,9 +33,8 @@ public class BuyConfig
 public class SellConfig
 {
     [JsonPropertyName("enabled")] public bool Enabled { get; set; } = true;
-    [JsonPropertyName("chaos")] public bool Chaos { get; set; } = true;
-    [JsonPropertyName("supplyMinPosition")] public int SupplyMinPosition { get; set; } = 5;
-    [JsonPropertyName("supplyMaxPosition")] public int SupplyMaxPosition { get; set; } = 15;
+    [JsonPropertyName("supplyMinPosition")] public int SupplyMinPosition { get; set; } = 2;
+    [JsonPropertyName("supplyMaxPosition")] public int SupplyMaxPosition { get; set; } = 10;
     [JsonPropertyName("demandMinBuyChance")] public double DemandMinBuyChance { get; set; } = 10.0;
     [JsonPropertyName("demandMaxBuyChance")] public double DemandMaxBuyChance { get; set; } = 100.0;
     [JsonPropertyName("demandMinDelay")] public double DemandMinDelay { get; set; } = 3600.0;

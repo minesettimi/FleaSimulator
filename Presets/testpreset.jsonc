@@ -9,7 +9,6 @@
     "buy":
     {
       "enabled": true,
-      "canHaveNoOffers": true, //can an item generate no offers
       "supplyMinOffers": 2, //offers available for items at minimum supply (0.01) 
       "supplyMaxOffers": 20, //offers available at maximum supply (1.0)
       "supplyOfferOffset": 3, //+- to the offer count by rng
@@ -21,8 +20,8 @@
     {
       "enabled": true,
       "chaos": true, //can sell values be altered by chaos
-      "supplyMinPosition": 5, //highest position in the flea list for an item to be 0% sell chance at minimum supply (0.01)
-      "supplyMaxPosition": 15, //position in the flea at maximum supply (1.0)
+      "supplyMinPosition": 2, //highest position in the flea list for an item to be 0% sell chance at minimum supply (0.01)
+      "supplyMaxPosition": 10, //position in the flea at maximum supply (1.0)
       "demandMinBuyChance": 10.0, //chance an item is bought at the lowest position when at minimum demand (0.01) 
       "demandMaxBuyChance": 100.0, //chance at maximum demand (1.0)
       "demandMinDelay": 3600.0, //baseline delay for an item to be sold when at minimum demand (0.01)

@@ -1,5 +1,6 @@
 using System.Reflection;
 using FleaSimulator.Helpers;
+using FleaSimulator.Services;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
@@ -10,9 +11,11 @@ namespace FleaSimulator.Overrides.Helpers;
 public class CalculateStackCountOverride : AbstractPatch
 {
     private static OfferHelper offerHelper;
+    private static PresetService presetService;
     
     protected override MethodBase? GetTargetMethod()
     {
+        presetService = ServiceLocator.ServiceProvider.GetRequiredService<PresetService>();
         offerHelper = ServiceLocator.ServiceProvider.GetRequiredService<OfferHelper>();
         return typeof(RagfairServerHelper).GetMethod(nameof(RagfairServerHelper.CalculateDynamicStackCount));
     }
@@ -20,7 +23,8 @@ public class CalculateStackCountOverride : AbstractPatch
     [PatchPrefix]
     public static bool Prefix(MongoId tplId, bool isPreset, ref int __result)
     {
-        if (!offerHelper.ShouldModifyQuantity(tplId, isPreset))
+        if (!presetService.Config.Core.BuyConfig.Enabled ||
+            !offerHelper.ShouldModifyQuantity(tplId, isPreset))
             return true;
 
         int quant = offerHelper.GetItemQuantity(tplId);
@@ -37,6 +41,6 @@ public class CalculateStackCountOverride : AbstractPatch
     [PatchPostfix]
     public static int Postfix(int __result)
     {
-        return offerHelper.ModifyWipeQuantity(__result);
+        return !presetService.Config.Core.BuyConfig.Enabled ? __result : offerHelper.ModifyWipeQuantity(__result);
     }
 }

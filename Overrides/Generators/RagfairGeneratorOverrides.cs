@@ -40,18 +40,23 @@ public class CreateOffersFromAssortOverride : AbstractPatch
 
 public class GenerateDynamicOffersOverride : AbstractPatch
 {
-    private static OfferHelper _offerHelper;
+    private static OfferHelper offerHelper;
+    private static PresetService presetService;
     
     protected override MethodBase? GetTargetMethod()
     {
-        _offerHelper = ServiceLocator.ServiceProvider.GetService<OfferHelper>()!;
+        presetService = ServiceLocator.ServiceProvider.GetService<PresetService>();
+        offerHelper = ServiceLocator.ServiceProvider.GetService<OfferHelper>()!;
         return typeof(RagfairOfferGenerator).GetMethod(nameof(RagfairOfferGenerator.GenerateDynamicOffers));
     }
 
     [PatchPrefix]
     public static bool Prefix()
     {
-        _offerHelper.UpdatePrices();
+        if (!presetService.Config.Core.BuyConfig.Enabled)
+            return true;
+        
+        offerHelper.UpdatePrices();
         
         return true;
     }
