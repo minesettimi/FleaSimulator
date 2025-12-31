@@ -103,8 +103,9 @@ public class ItemDataService
             
             ItemState itemState = new();
             double? liveValue = originalItems.GetValueOrDefault(key);
-                
-            liveValue ??= handbook.Items.SingleOrDefault(i => i.Id == key)?.Price;
+
+            if (liveValue == 0 || liveValue is null)
+                liveValue = handbook.Items.SingleOrDefault(i => i.Id == key)?.Price;
             
             int convertedValue = Convert.ToInt32(Math.Round(category.ValueMult * liveValue.GetValueOrDefault(0)));
 
