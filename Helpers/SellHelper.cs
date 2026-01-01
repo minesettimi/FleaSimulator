@@ -270,7 +270,7 @@ public class SellHelper(PresetService presetService,
     }
 
     public double CalculateSellChance(MongoId tpl, ItemState itemState, double singleItemPrice, double quality,
-        out int resultPos, double presetPrice = -1)
+        out int resultPos)
     {
         CategoryConfig category = itemState.Category;
         
@@ -285,8 +285,9 @@ public class SellHelper(PresetService presetService,
         //get item position
         IEnumerable<RagfairOffer> offers = offerHolder.GetOffersByTemplate(tpl)!;
         List<MongoId> expiredOffers = offerHolder.GetStaleOfferIds();
-
-        double totalPresetPrice = 0.0;
+        
+        double totalPrice = 0.0;
+        bool isPreset = false;
 
         int validOffers = 0;
         int position = 0;
@@ -297,33 +298,45 @@ public class SellHelper(PresetService presetService,
 
             validOffers++;
 
-            double offerPreset = 0;
+            double? price;
 
-            if (presetPrice >= 1 && itemHelper.IsOfBaseclass(tpl, BaseClasses.WEAPON))
-                offerPreset = priceService.GetPresetPriceByChildren(offer.Items!);
-
-            totalPresetPrice += offerPreset;
+            if (itemHelper.IsOfBaseclass(tpl, BaseClasses.WEAPON))
+            {
+                price = priceService.GetPresetPriceByChildren(offer.Items!);
+                isPreset = true;
+            }
+            else
+            {
+                double itemCount = offer.SellInOnePiece.GetValueOrDefault(false)
+                    ? offer.Items!.First().Upd?.StackObjectsCount ?? 1
+                    : 1;
             
-            double offerQuality = itemHelper.GetItemQualityModifierForItems(offer.Items!, true);
-
-            //move the position back for each better 
-            if (offer.RequirementsCost < singleItemPrice || offerQuality > quality)
+                price = offer.RequirementsCost / itemCount;
+            }
+            
+            totalPrice += price.Value;
+            
+            //move the position of this new item up for each item of lower price 
+            if (price < singleItemPrice)
                 position++;
         }
 
-        double presetMod = 1.0;
+        //if the player is selling something of less quality, calculate how far from average and modify the chances
+        double qualityMod = 1.0;
 
-        if (presetPrice >= 1)
+        //the average system from base game works better for quality, create a modifier and apply that to the position based chance
+        if (quality < 1.0 || isPreset)
         {
-            double presetAvg = totalPresetPrice / validOffers;
-            presetMod += (presetPrice - presetAvg) / presetAvg; //negative numbers when lower, positive when higher
+            double avgPrice = totalPrice / validOffers;
+            avgPrice *= quality;
+        
+            qualityMod += (singleItemPrice - avgPrice) / avgPrice; //negative numbers when lower, positive when higher
         }
 
         double sellChance = maxChance - mathUtil.MapToRange(position, 0, maxSellPos, 0, maxChance);
 
         resultPos = position;
-
-        double resultChance = chaosHelper.ChaosShift(category, sellChance) * quality * presetMod;
+        double resultChance = chaosHelper.ChaosShift(category, sellChance) * qualityMod;
 
         logger.Info($"[FleaSimulator] Selling item {tpl} at position {position} for {singleItemPrice} with sell chance {resultChance}%");
         

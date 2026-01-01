@@ -37,7 +37,7 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
     private readonly MethodBase _createSingleOffer = typeof(RagfairOfferGenerator)
         .GetMethod("CreateSingleOfferForItem",  BindingFlags.Instance | BindingFlags.NonPublic)!;
     
-    public void CreateOffersFromAssorts(List<Item> assortItems)
+    public void CreateOffersFromAssorts(List<Item> assortItems, bool isExpired)
     {
         Item? rootItem = assortItems.FirstOrDefault();
 
@@ -60,15 +60,21 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
         CategoryConfig category = itemState.Category;
         
         BuyConfig buyConfig = presetService.Config.Core.BuyConfig;
-        
-        int offerTotal = (int)Math.Round(mathUtil.MapToRange(category.Supply, 0,
-            1.0, buyConfig.SupplyMinOffers, buyConfig.SupplyMaxOffers));
 
-        int offerDiff = randomUtil.GetInt(-buyConfig.SupplyOfferOffset, buyConfig.SupplyOfferOffset);
-        offerDiff = chaosHelper.ChaosShift(category, offerDiff);
+        int offerTotal = 1;
+
+        if (!isExpired)
+        {
+            offerTotal = (int)Math.Round(mathUtil.MapToRange(category.Supply, 0,
+                1.0, buyConfig.SupplyMinOffers, buyConfig.SupplyMaxOffers));
+
         
-        offerTotal += offerDiff;
-        offerTotal = Math.Max(offerTotal, buyConfig.CanHaveNoOffers ? 0 : 1);
+            int offerDiff = randomUtil.GetInt(-buyConfig.SupplyOfferOffset, buyConfig.SupplyOfferOffset);
+            offerDiff = chaosHelper.ChaosShift(category, offerDiff);
+        
+            offerTotal += offerDiff;
+            offerTotal = Math.Max(offerTotal, buyConfig.CanHaveNoOffers ? 0 : 1);
+        }
         
         for (int i = 0; i < offerTotal; i++)
         {

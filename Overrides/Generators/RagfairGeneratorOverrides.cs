@@ -32,7 +32,7 @@ public class CreateOffersFromAssortOverride : AbstractPatch
         if (!presetService.Config.Core.BuyConfig.Enabled)
             return true;
         
-        generator.CreateOffersFromAssorts(assortItemWithChildren);
+        generator.CreateOffersFromAssorts(assortItemWithChildren, isExpiredOffer);
         
         return false;
     }
