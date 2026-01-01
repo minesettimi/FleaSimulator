@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using FleaSimulator.Helpers;
 using FleaSimulator.Models.Config;
 using FleaSimulator.Models.State;
@@ -40,7 +41,10 @@ public class SimulationService(PresetService preset,
 
     private void SimulateMarket()
     {
-        long startTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        Stopwatch stopwatch = new();
+        
+        stopwatch.Start();
+        
         SaveState state = itemData.CurrentState;
 
         if (state.WipeState == WipeState.Start && DateTime.Now > state.WipeChange)
@@ -65,9 +69,9 @@ public class SimulationService(PresetService preset,
         
         itemData.SaveCurrentState();
         
-        long endTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        stopwatch.Stop();
         
-        logger.Info($"[FleaSimulator] Finished simulation in {endTime - startTime}ms.");
+        logger.Info($"[FleaSimulator] Finished simulation in {stopwatch.ElapsedMilliseconds}ms.");
     }
 
     public void SimulateItem(MongoId id, ItemState item, DateTime? time = null)
