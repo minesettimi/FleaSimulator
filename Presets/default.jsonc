@@ -49,7 +49,7 @@
   "items":
   {
     //sets the category for all children items
-    //priority is based on how early in the list, NOT hierarchy (TODO)
+    //priority is based on how early in the list, NOT hierarchy
     "parents": 
     {
       "55818aeb4bdc2ddc698b456a": "ExtremelyRare", //specialty scopes
