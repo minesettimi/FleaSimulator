@@ -338,7 +338,7 @@ public class SellHelper(PresetService presetService,
         resultPos = position;
         double resultChance = chaosHelper.ChaosShift(category, sellChance) * qualityMod;
 
-        logger.Info($"[FleaSimulator] Selling item {tpl} at position {position} for {singleItemPrice} with sell chance {resultChance}%");
+        logger.Debug($"[FleaSimulator] Selling item {tpl} at position {position} for {singleItemPrice} with sell chance {resultChance}%");
         
         return resultChance;
     }
@@ -348,7 +348,7 @@ public class SellHelper(PresetService presetService,
         long currentTimestamp = timeUtil.GetTimeStamp();
         SellConfig sellConfig = presetService.Config.Core.SellConfig;
         
-        logger.Info($"[FleaSimulator] There are {results.Count} sell results.");
+        logger.Debug($"[FleaSimulator] There are {results.Count} sell results.");
         
         double maxDelay = sellConfig.DemandMinDelay - chaosHelper.MapToRange01(itemState.Category.Demand,
             sellConfig.DemandMaxDelay, sellConfig.DemandMinDelay);
@@ -360,7 +360,7 @@ public class SellHelper(PresetService presetService,
         {
             int delay = (int)Math.Round(randomUtil.GetBiasedRandomNumber(0, maxDelay, 0, 1));
             
-            logger.Info($"[FleaSimulator] Setting offer delay {delay}s");
+            logger.Debug($"[FleaSimulator] Setting offer delay {delay}s");
 
             result.SellTime = currentTimestamp + delay;
         }

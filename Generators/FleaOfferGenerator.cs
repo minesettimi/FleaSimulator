@@ -67,7 +67,6 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
         {
             offerTotal = (int)Math.Round(mathUtil.MapToRange(category.Supply, 0,
                 1.0, buyConfig.SupplyMinOffers, buyConfig.SupplyMaxOffers));
-
         
             int offerDiff = randomUtil.GetInt(-buyConfig.SupplyOfferOffset, buyConfig.SupplyOfferOffset);
             offerDiff = chaosHelper.ChaosShift(category, offerDiff);
