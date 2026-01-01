@@ -42,7 +42,7 @@
     "simInterval": 30, //how often in minutes the flea market is simulated    
     "debug": true,
     "debugSimulation": true,
-    "debugItem": "5c06779c86f77426e00dd782"
+    "debugItem": "5df8ce05b11454561e39243b"
   },
   //sets which sim categories apply to which items
   //order is individual -> direct parents -> base classes (order is based on config order NOT hierarchy.)
@@ -56,7 +56,7 @@
       "57864a66245977548f04a81f": "Hideout", //electronics
       "57864ada245977548638de91": "Hideout", //building material
       "57864e4c24597754843f8723": "Hideout", //flammables
-      "5c99f98d86f7745c314214b3": "Keys", //mechanical keys
+      "5c99f98d86f7745c314214b3": "Key", //mechanical keys
       "5c164d2286f774194c5e69fa": "ExtremelyRare", //keycards
       "543be6674bdc2df1348b4569": "Food", //food and drinks
       "57864c8c245977548867e7f1": "Medical", //medical supplies
@@ -69,6 +69,7 @@
       "57bef4c42459772e8d35a53b": "Rare", //armored equipment
       "5448fe124bdc2da5018b4567": "Common", //weapon mods
       "5485a8684bdc2da71d8b4567": "Rare", //ammo
+      "5422acb9af1c889c16000029": "Weapon", //weapons
       "590c745b86f7743cc433c5f2": "Crafting" //other
       
     },
@@ -135,15 +136,6 @@
   //categories for different simulation behaviors
   "categories":
   {
-    "Common":
-    {
-      "chaos": 0.05,
-      "chaosChance": 0.3,
-      "minOfferPrice": 0.85,
-      "maxOfferPrice": 1.0,
-      "demand": 0.1,
-      "supply": 1.0
-    },
     "Hideout":
     {
       "valueMult": 1.0,
@@ -185,7 +177,7 @@
       "demand": 1.0,
       "supply": 0.7
     },
-    "Keys":
+    "Key":
     {
       "earlyWipeMult": 4,
       "chaos": 0.9,
@@ -194,9 +186,38 @@
       "chaosMaxIter": 15,
       "minOfferPrice": 1.0,
       "settleSpeed": 0.015,
+      "settleSpeedBelow": 0.85,
       "maxOfferPrice": 1.1,
       "demand": 0.85,
       "supply": 0.7
+    },
+    "Weapon":
+    {
+      "chaos": 1.0,
+      "chaosChance": 0.85,
+      "chaosMinIter": 5,
+      "chaosMaxIter": 15,
+      "settleSpeed": 0.015,
+      "settleSpeedBelow": 0.85,
+      "simChance": 0.75
+    },
+    "Medical":
+    {
+      "earlyWipeMult": 6.5,
+      "chaos": 0.6,
+      "chaosChance": 0.9,
+      "chaosMaxIter": 10,
+      "settleSpeed": 0.0005,
+      "settleSpeedBelow": 0.004
+    },
+    "Common":
+    {
+      "chaos": 0.05,
+      "chaosChance": 0.3,
+      "minOfferPrice": 0.85,
+      "maxOfferPrice": 1.0,
+      "demand": 0.1,
+      "supply": 1.0
     },
     "Rare":
     {
@@ -244,15 +265,16 @@
       "chaosMinVal": 0.85,
       "chaosMaxVal": 1.3,
       "chaosChance": 1.0,
-      "settleSpeed": 0.0,
-      "settleSpeedBelow": 1.0,
+      "settleSpeed": 0.0001,
+      "settleSpeedBelow": 0.9,
       "chaosMinIter": 2,
       "chaosMaxIter": 10,
       "chaosMinOffset": -0.2,
       "chaosMaxOffset": 0.2,
       "minOfferPrice": 1.0,
       "maxOfferPrice": 1.2,
-      "simChance": 0.05,
+      "simChance": 0.1,
+      "maxValue": 15.0,
       "demand": 1.0,
       "supply": 0.01
     },
@@ -274,6 +296,7 @@
       "settleSpeedBelow": 0.001, //settle only raises prices that drop below the true value
       "minOfferPrice": 0.95, //how far below the base price can offers be placed
       "maxOfferPrice": 1.1, //how far above the bace price can offers be placed
+      "maxValue": 10.0, //cap on how far above the base price can an item be simulated
       "demand": 0.5, //theoretical demand for the item, does not affect price but changes sell chance (0.01 - 1.0)
       "supply": 0.4, //theoretical supply for the item, does not affect price but changes offer count (0.01 - 1.0)
       "simChance": 1.0 //chance the items prices are simulated

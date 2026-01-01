@@ -83,8 +83,9 @@ public class SimulationService(PresetService preset,
         int trueValueDif = item.CurrentPrice - item.TruePrice;
 
         double settleVal = 0;
+        WipeState currentState = itemData.CurrentState.WipeState;
 
-        if (itemData.CurrentState.WipeState == WipeState.Middle || (time is not null && itemData.CurrentState.WipeChange < time))
+        if (currentState == WipeState.Middle || (time is not null && itemData.CurrentState.WipeChange < time))
         {
             if (trueValueDif < 0)
                 settleVal = trueValueDif * chaosHelper.ChaosShift(category, category.SettleSpeedBelow);
@@ -112,14 +113,20 @@ public class SimulationService(PresetService preset,
         }
             
         item.TargetPrice -= (int)Math.Round(settleVal);
+
+        bool balancedPricing = preset.Config.Core.WipePrices.BalancedPricing;
         
         //cap out prices based on configuration
-        if (preset.Config.Core.BuyConfig.TraderPrices && (preset.Config.Core.WipePrices.BalancedPricing 
-                                                          || itemData.CurrentState.WipeState == WipeState.Middle))
+        if (preset.Config.Core.BuyConfig.TraderPrices && (balancedPricing || currentState == WipeState.Middle))
         {
             double tradePrice = traderHelper.GetHighestSellToTraderPrice(id);
             if (tradePrice > item.TargetPrice)
                 item.TargetPrice = (int)Math.Round(tradePrice);
+        }
+
+        if ((!balancedPricing || currentState == WipeState.Middle) && item.TargetPrice > category.MaxValue * item.TruePrice)
+        {
+            item.TargetPrice = (int)Math.Round(category.MaxValue * item.TruePrice);
         }
 
         double chaosClamp = category.ChaosMaxIterations - category.ChaosMinIterations;

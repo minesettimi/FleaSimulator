@@ -28,6 +28,7 @@ public class CategoryConfig
     public double SettleSpeedBelow { get; set; }
     public double MinOfferPrice { get; set; }
     public double MaxOfferPrice { get; set; }
+    public double MaxValue { get; set; }
     public double Demand { get; set; }
     public double Supply { get; set; }
     public double SimChance { get; set; }
@@ -51,6 +52,7 @@ public class CategoryConfig
             SettleSpeedBelow = 0.01,
             MinOfferPrice = 0.95,
             MaxOfferPrice = 1.1,
+            MaxValue = 10.0,
             Demand = 0.5,
             Supply = 0.4,
             SimChance = 1.0
@@ -104,6 +106,7 @@ public class SavedCategoryConfig
     [JsonPropertyName("settleSpeedBelow")] public double? SettleSpeedBelow { get; set; }
     [JsonPropertyName("minOfferPrice")] public double? MinOfferPrice { get; set; }
     [JsonPropertyName("maxOfferPrice")] public double? MaxOfferPrice { get; set; }
+    [JsonPropertyName("maxValue")] public double? MaxValue { get; set; }
     [JsonPropertyName("demand")] public double? Demand { get; set; }
     [JsonPropertyName("supply")] public double? Supply { get; set; }
     [JsonPropertyName("simChance")] public double? SimChance { get; set; }
