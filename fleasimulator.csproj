@@ -7,7 +7,7 @@
         <OutputType>Library</OutputType>
         <Version>0.0.1</Version>
         <!-- The two lines below will set the output path for the binaries -->
-        <OutputPath>bin\$(Configuration)\$(ProjectName)\$(AssemblyName)\</OutputPath>
+        <OutputPath>bin\$(Configuration)\SPT\user\mods\$(ProjectName)\</OutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
     
@@ -24,10 +24,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <None Update="Presets/testpreset.jsonc">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="Presets\default.jsonc">
+        <None Update="Presets/default.jsonc">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
