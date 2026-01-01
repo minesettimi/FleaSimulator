@@ -138,12 +138,11 @@ public class SellHelper(PresetService presetService,
 
         MongoId firstOfferItemId = offerRequest.Items.First();
         
-        itemService.CurrentState.Items.TryGetValue(firstOfferItemId, out ItemState? firstItemState);
+        List<Item> inventoryItems = pmcData.Inventory.Items.GetItemWithChildren(firstOfferItemId);
+        itemService.CurrentState.Items.TryGetValue(inventoryItems[0].Template, out ItemState? firstItemState);
 
         if (firstItemState is null)
             return null;
-        
-        List<Item> inventoryItems = pmcData.Inventory.Items.GetItemWithChildren(firstOfferItemId);
 
         GetItemsToList result = GetItemsFromInventory(pmcData, offerRequest.Items);
         if (result.Items is null || !string.IsNullOrEmpty(result.ErrorMessage))
@@ -158,18 +157,18 @@ public class SellHelper(PresetService presetService,
         firstInvItem.Upd.StackObjectsCount = stackTotal;
 
         RagfairOffer offer = (RagfairOffer)_createPlayerOffer.Invoke(ragfairController,
-            [sessionID, offerRequest.Requirements, inventoryItems, true])!;
+            [sessionID, offerRequest.Requirements, inventoryItems, false])!;
 
-        Item newRootItem = offer.Items[0];
+        Item newRootItem = offer.Items.First(x => x.Id == firstOfferItemId);
 
         double qualityMultiplier = itemHelper.GetItemQualityModifierForItems(offer.Items, true);
 
         double playerPriceRub = (double)_calculateRequirements.Invoke(ragfairController, [offerRequest.Requirements])!;
         
         double sellChance = CalculateSellChance(newRootItem.Template, firstItemState,
-            playerPriceRub / stackTotal, qualityMultiplier, out int offerPos);
+            playerPriceRub, qualityMultiplier, out int offerPos);
 
-        List<SellResult> initialResults = sellHelper.RollForSale(sellChance, (int)stackTotal, true);
+        List<SellResult> initialResults = sellHelper.RollForSale(sellChance, (int)stackTotal);
         offer.SellResults = SetOfferDelays(firstItemState, initialResults, offerPos);
 
         if (_ragfairConfig.Sell.Fees)
@@ -226,7 +225,7 @@ public class SellHelper(PresetService presetService,
         double stackTotal = offerHelper.GetTotalStackCountSize(itemsToSell.Items);
 
         RagfairOffer offer = (RagfairOffer)_createPlayerOffer.Invoke(ragfairController,
-            [sessionID, offerRequest.Requirements, firstItem, false])!;
+            [sessionID, offerRequest.Requirements, itemsToSell.Items.First(), false])!;
 
         Item newRootItem = offer.Items.FirstOrDefault(x => x.Id == offerRequest.Items[0]);
 
@@ -320,11 +319,15 @@ public class SellHelper(PresetService presetService,
             presetMod += (presetPrice - presetAvg) / presetAvg; //negative numbers when lower, positive when higher
         }
 
-        double sellChance = mathUtil.MapToRange(position, 0, maxSellPos, maxChance, 0);
+        double sellChance = maxChance - mathUtil.MapToRange(position, 0, maxSellPos, 0, maxChance);
 
         resultPos = position;
 
-        return chaosHelper.ChaosShift(category, sellChance) * quality * presetMod;
+        double resultChance = chaosHelper.ChaosShift(category, sellChance) * quality * presetMod;
+
+        logger.Info($"[FleaSimulator] Selling item {tpl} at position {position} for {singleItemPrice} with sell chance {resultChance}%");
+        
+        return resultChance;
     }
 
     private List<SellResult> SetOfferDelays(ItemState itemState, List<SellResult> results, int position)
@@ -334,14 +337,17 @@ public class SellHelper(PresetService presetService,
         
         logger.Info($"[FleaSimulator] There are {results.Count} sell results.");
         
-        double maxDelay = chaosHelper.MapToRange01(itemState.Category.Demand, sellConfig.DemandMinDelay, sellConfig.DemandMaxDelay);
+        double maxDelay = sellConfig.DemandMinDelay - chaosHelper.MapToRange01(itemState.Category.Demand,
+            sellConfig.DemandMaxDelay, sellConfig.DemandMinDelay);
         maxDelay += sellConfig.PosDelay * position;
 
         maxDelay = chaosHelper.ChaosShift(itemState.Category, maxDelay);
 
         foreach (SellResult result in results)
         {
-            int delay = (int)Math.Round(randomUtil.GetBiasedRandomNumber(0, maxDelay, 0, 6));
+            int delay = (int)Math.Round(randomUtil.GetBiasedRandomNumber(0, maxDelay, 0, 1));
+            
+            logger.Info($"[FleaSimulator] Setting offer delay {delay}s");
 
             result.SellTime = currentTimestamp + delay;
         }
@@ -351,15 +357,15 @@ public class SellHelper(PresetService presetService,
 
     private GetItemsToList GetItemsFromInventory(PmcData pmcData, List<MongoId> items)
     {
-        object newList = _getFromInventory.Invoke(pmcData, [pmcData, items])!;
+        object newList = _getFromInventory.Invoke(ragfairController, [pmcData, items])!;
 
-        PropertyInfo itemProperty = _getItemsToList.GetProperty("Items", BindingFlags.Instance)!;
-        PropertyInfo errorProperty = _getItemsToList.GetProperty("ErrorMessage", BindingFlags.Instance)!;
+        PropertyInfo itemProperty = _getItemsToList.GetProperty("Items")!;
+        PropertyInfo errorProperty = _getItemsToList.GetProperty("ErrorMessage")!;
 
         GetItemsToList convertedList = new()
         {
-            Items = (List<List<Item>>)itemProperty.GetValue(newList)!,
-            ErrorMessage = (string?)errorProperty.GetValue(newList)!
+            Items = (List<List<Item>>?)itemProperty.GetValue(newList),
+            ErrorMessage = (string?)errorProperty.GetValue(newList)
         };
 
         return convertedList;

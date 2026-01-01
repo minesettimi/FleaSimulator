@@ -6,8 +6,8 @@ public class CoreConfig
 {
     [JsonPropertyName("name")] public string Name { get; set; } = "Default Config";
     [JsonPropertyName("author")] public string Author { get; set; } = "minesettimi";
-    [JsonPropertyName("buyConfig")] public BuyConfig BuyConfig { get; set; } = new();
-    [JsonPropertyName("sellConfig")] public SellConfig SellConfig { get; set; } = new();
+    [JsonPropertyName("buy")] public BuyConfig BuyConfig { get; set; } = new();
+    [JsonPropertyName("sell")] public SellConfig SellConfig { get; set; } = new();
     [JsonPropertyName("wipePrices")] public WipePriceConfig WipePrices { get; set; } = new();
     [JsonPropertyName("updateInterval")] public double UpdateInterval { get; set; } = 60.0;
     [JsonPropertyName("simInterval")] public double SimulationInterval { get; set; } = 60.0;
@@ -32,14 +32,14 @@ public class BuyConfig
 
 public class SellConfig
 {
-    [JsonPropertyName("enabled")] public bool Enabled { get; set; } = true;
-    [JsonPropertyName("supplyMinPosition")] public int SupplyMinPosition { get; set; } = 2;
-    [JsonPropertyName("supplyMaxPosition")] public int SupplyMaxPosition { get; set; } = 10;
-    [JsonPropertyName("demandMinBuyChance")] public double DemandMinBuyChance { get; set; } = 10.0;
-    [JsonPropertyName("demandMaxBuyChance")] public double DemandMaxBuyChance { get; set; } = 100.0;
-    [JsonPropertyName("demandMinDelay")] public int DemandMinDelay { get; set; } = 3600;
-    [JsonPropertyName("demandMaxDelay")] public int DemandMaxDelay { get; set; } = 0;
-    [JsonPropertyName("posDelay")] public int PosDelay { get; set; } = 30;
+    [JsonPropertyName("enabled")] public bool Enabled { get; set; }
+    [JsonPropertyName("supplyMinPosition")] public int SupplyMinPosition { get; set; }
+    [JsonPropertyName("supplyMaxPosition")] public int SupplyMaxPosition { get; set; }
+    [JsonPropertyName("demandMinBuyChance")] public double DemandMinBuyChance { get; set; }
+    [JsonPropertyName("demandMaxBuyChance")] public double DemandMaxBuyChance { get; set; }
+    [JsonPropertyName("demandMinDelay")] public int DemandMinDelay { get; set; }
+    [JsonPropertyName("demandMaxDelay")] public int DemandMaxDelay { get; set; }
+    [JsonPropertyName("posDelay")] public int PosDelay { get; set; }
 }
 
 public class WipePriceConfig
