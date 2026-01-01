@@ -4,7 +4,7 @@ using SPTarkov.Server.Core.DI;
 
 namespace FleaSimulator.OnLoad;
 
-[Injectable(TypePriority = OnLoadOrder.RagfairCallbacks - 2)]
+[Injectable(TypePriority = OnLoadOrder.RagfairCallbacks - 3)]
 public class PreRagfair(PresetService presetService,
     SimulationService simService,
     DebugService debug,

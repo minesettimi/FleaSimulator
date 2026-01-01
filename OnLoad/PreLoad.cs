@@ -38,11 +38,6 @@ public class PreLoad(PresetService presetService,
         ragfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice = false;
         
         //completely override refresh system
-        int refreshInterval = (int)Math.Round(presetService.Config.Core.UpdateInterval * 60);
-        ragfairConfig.RunIntervalSeconds = refreshInterval;
-        ragfairConfig.RunIntervalValues.InRaid = refreshInterval;
-        ragfairConfig.RunIntervalValues.OutOfRaid = refreshInterval;
-        
         ragfairConfig.Dynamic.ExpiredOfferThreshold = 0;
 
         //disable unreasonable price caps

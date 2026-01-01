@@ -13,6 +13,7 @@ namespace FleaSimulator.Overrides.Servers;
 public class UpdateOverride : AbstractPatch
 {
     private static PresetService _presetService;
+    private static long lastUpdate;
     
     protected override MethodBase? GetTargetMethod()
     {
@@ -25,6 +26,13 @@ public class UpdateOverride : AbstractPatch
     {
         if (!_presetService.Config.Core.BuyConfig.Enabled)
             return true;
+        
+        long now = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+        if (now < lastUpdate + _presetService.Config.Core.UpdateInterval * 60)
+            return false;
+        
+        lastUpdate = now;
         
         //kill off every fake flea offer before processing
         RagfairOfferHolder offerHolder = ServiceLocator.ServiceProvider.GetRequiredService<RagfairOfferHolder>();

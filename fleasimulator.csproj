@@ -7,7 +7,7 @@
         <OutputType>Library</OutputType>
         <Version>0.6.1</Version>
         <!-- The two lines below will set the output path for the binaries -->
-        <OutputPath>bin\$(Configuration)\SPT\user\mods\$(ProjectName)\</OutputPath>
+        <OutputPath>bin\$(Configuration)\$(ProjectName)\$(AssemblyName)\</OutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
     
@@ -29,7 +29,7 @@
         </None>
     </ItemGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Target  Name="PostBuild" AfterTargets="PostBuildEvent">
         <ItemGroup>
             <CompileFiles Include="$(TargetDir)*.deps.json;$(TargetDir)*.endpoints.json" />
         </ItemGroup>
