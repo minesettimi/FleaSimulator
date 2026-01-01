@@ -9,7 +9,7 @@
     "buy":
     {
       "enabled": true,
-      "canHaveNoOffers": false, //items can generate with 0 offers
+      "canHaveNoOffers": true, //items can generate with 0 offers
       "traderPrices": true, //simulation won't go below best trader price
       "useHandbook": false, //use handbook prices over cached flea for base prices
       "supplyMinOffers": 2, //offers available for items at minimum supply (0.01) 
