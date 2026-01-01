@@ -86,7 +86,9 @@ public class SimulationService(PresetService preset,
 
         if (itemData.CurrentState.WipeState == WipeState.Middle || (time is not null && itemData.CurrentState.WipeChange < time))
         {
-            if (!category.SettleOnlyMin || trueValueDif < 0)
+            if (trueValueDif < 0)
+                settleVal = trueValueDif * chaosHelper.ChaosShift(category, category.SettleSpeedBelow);
+            else
                 settleVal = trueValueDif * chaosHelper.ChaosShift(category, category.SettleSpeed);
         }
         else
@@ -101,28 +103,36 @@ public class SimulationService(PresetService preset,
             
             double changeFactor = Math.Pow(diffPercent, iterPercentage) - 1;
 
-            settleVal = trueValueDif * changeFactor;
+            settleVal = trueValueDif * Math.Abs(changeFactor);
+
+            if (preset.Config.Core.Debug && id == preset.Config.Core.DebugItem)
+            {
+                logger.Debug($"[Flea Simulator] Processed debug item, settled by {changeFactor}");
+            }
         }
             
         item.TargetPrice -= (int)Math.Round(settleVal);
         
         //cap out prices based on configuration
-        if (_ragfairConfig.Dynamic.UseTraderPriceForOffersIfHigher)
+        if (preset.Config.Core.BuyConfig.TraderPrices && (preset.Config.Core.WipePrices.BalancedPricing 
+                                                          || itemData.CurrentState.WipeState == WipeState.Middle))
         {
             double tradePrice = traderHelper.GetHighestSellToTraderPrice(id);
             if (tradePrice > item.TargetPrice)
                 item.TargetPrice = (int)Math.Round(tradePrice);
         }
 
-        double chaosClamp = category.ChaosMaxIterations - 1d;
+        double chaosClamp = category.ChaosMaxIterations - category.ChaosMinIterations;
 
-        double shift = Math.Clamp(category.ChaosMaxIterations - category.Chaos - category.ChaosMinIterations, category.ChaosMinIterations, chaosClamp);
+        double shift = Math.Clamp(category.ChaosMaxIterations - category.Chaos - category.ChaosMinIterations, 0, chaosClamp);
 
         double chaosChance = randomUtil.GetBiasedRandomNumber(category.ChaosMinIterations, category.ChaosMaxIterations, 
             shift, 2d + category.Chaos*2);
 
         int chaosCount = (int)Math.Round(chaosChance);
 
+        item.TargetPrice = Math.Max(item.TargetPrice, 1);
+        
         int previousPrice = item.TargetPrice;
         double minPrice = previousPrice * category.ChaosMinVal;
         double maxPrice = previousPrice * category.ChaosMaxVal;

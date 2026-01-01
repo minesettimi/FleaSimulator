@@ -9,6 +9,9 @@
     "buy":
     {
       "enabled": false,
+      "canHaveNoOffers": true, //items can generate with 0 offers
+      "traderPrices": true, //simulation won't go below best trader price
+      "useHandbook": false, //use handbook prices for base items
       "supplyMinOffers": 2, //offers available for items at minimum supply (0.01) 
       "supplyMaxOffers": 20, //offers available at maximum supply (1.0)
       "supplyOfferOffset": 3, //+- to the offer count by rng
@@ -31,6 +34,7 @@
     "wipePrices":
     {
       "enabled": true,
+      "balancedPricing": false, //enables caps such as having a minimum of trader prices if enabled
       "startLength": 10.0, //how long the start of a wipe lasts in days
       "earlyQuantityMult": 0.2 //multiplier to item quantity during early wipe, minimum is 1
     },
@@ -38,7 +42,7 @@
     "simInterval": 30, //how often in minutes the flea market is simulated    
     "debug": true,
     "debugSimulation": true,
-    "debugItem": "5d1b2f3f86f774252167a52c"
+    "debugItem": "5c06779c86f77426e00dd782"
   },
   //sets which sim categories apply to which items
   //order is individual -> direct parents -> base classes (order is based on config order NOT hierarchy.)
@@ -149,6 +153,7 @@
       "minOfferPrice": 0.85,
       "maxOfferPrice": 1.2,
       "settleSpeed": 0.01,
+      "settleSpeedBelow": 0.005,
       "demand": 0.6,
       "supply": 0.8
     },
@@ -170,11 +175,11 @@
       "valueMult": 1.2,
       "earlyWipeMult": 0.15,
       "chaos": 0.8,
-      "chaosChance": 0.8,
-      "chaosMinIter": 3,
-      "settleSpeed": 0,
-      "settleOnlyMin": true,
-      "chaosMaxIter": 10,
+      "chaosChance": 0.65,
+      "chaosMinIter": 1,
+      "chaosMaxIter": 3,
+      "settleSpeed": 0.005,
+      "settleSpeedBelow": 0.0025,
       "minOfferPrice": 0.95,
       "maxOfferPrice": 1.2,
       "demand": 1.0,
@@ -239,8 +244,8 @@
       "chaosMinVal": 0.85,
       "chaosMaxVal": 1.3,
       "chaosChance": 1.0,
-      "settleSpeed": 1.0,
-      "settleOnlyMin": true,
+      "settleSpeed": 0.0,
+      "settleSpeedBelow": 1.0,
       "chaosMinIter": 2,
       "chaosMaxIter": 10,
       "chaosMinOffset": -0.2,
@@ -265,8 +270,8 @@
       "chaosMinOffset": -0.05, //lowest percentage that values can be offset by chaos
       "chaosMaxOffset": 0.05, //highest percentage
       "chaosChance": 0.75, //chance that chaos effects a property
-      "settleSpeed": 0.002, //percentage speed price returns to a stable price, higher numbers make prices jump around far less
-      "settleOnlyMin": false, //settle only raises prices that drop below the true value
+      "settleSpeed": 0.0005, //percentage speed price returns to a stable price, higher numbers make prices jump around far less
+      "settleSpeedBelow": 0.001, //settle only raises prices that drop below the true value
       "minOfferPrice": 0.95, //how far below the base price can offers be placed
       "maxOfferPrice": 1.1, //how far above the bace price can offers be placed
       "demand": 0.5, //theoretical demand for the item, does not affect price but changes sell chance (0.01 - 1.0)

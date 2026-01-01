@@ -25,7 +25,7 @@ public class CategoryConfig
     public double ChaosMaxOffset { get; set; }
     public double ChaosChance { get; set; }
     public double SettleSpeed { get; set; }
-    public bool  SettleOnlyMin { get; set; }
+    public double SettleSpeedBelow { get; set; }
     public double MinOfferPrice { get; set; }
     public double MaxOfferPrice { get; set; }
     public double Demand { get; set; }
@@ -48,7 +48,7 @@ public class CategoryConfig
             ChaosMaxOffset = 0.05,
             ChaosChance = 0.75,
             SettleSpeed = 0.01,
-            SettleOnlyMin = false,
+            SettleSpeedBelow = 0.01,
             MinOfferPrice = 0.95,
             MaxOfferPrice = 1.1,
             Demand = 0.5,
@@ -101,7 +101,7 @@ public class SavedCategoryConfig
     [JsonPropertyName("chaosMaxOffset")] public double? ChaosMaxOffset { get; set; }
     [JsonPropertyName("chaosChance")] public double? ChaosChance { get; set; }
     [JsonPropertyName("settleSpeed")] public double? SettleSpeed { get; set; }
-    [JsonPropertyName("settleOnlyMin")] public bool? SettleOnlyMin { get; set; }
+    [JsonPropertyName("settleSpeedBelow")] public double? SettleSpeedBelow { get; set; }
     [JsonPropertyName("minOfferPrice")] public double? MinOfferPrice { get; set; }
     [JsonPropertyName("maxOfferPrice")] public double? MaxOfferPrice { get; set; }
     [JsonPropertyName("demand")] public double? Demand { get; set; }

@@ -102,7 +102,7 @@ public class ItemDataService
                 continue;
             
             ItemState itemState = new();
-            double? liveValue = originalItems.GetValueOrDefault(key);
+            double? liveValue = !preset.Config.Core.BuyConfig.UseHandbook ? originalItems.GetValueOrDefault(key) : null;
 
             if (liveValue == 0 || liveValue is null)
                 liveValue = handbook.Items.SingleOrDefault(i => i.Id == key)?.Price;
