@@ -269,7 +269,7 @@ public class SellHelper(PresetService presetService,
         return output;
     }
 
-    private double CalculateSellChance(MongoId tpl, ItemState itemState, double singleItemPrice, double quality,
+    public double CalculateSellChance(MongoId tpl, ItemState itemState, double singleItemPrice, double quality,
         out int resultPos, double presetPrice = -1)
     {
         CategoryConfig category = itemState.Category;
@@ -330,7 +330,7 @@ public class SellHelper(PresetService presetService,
         return resultChance;
     }
 
-    private List<SellResult> SetOfferDelays(ItemState itemState, List<SellResult> results, int position)
+    public List<SellResult> SetOfferDelays(ItemState itemState, List<SellResult> results, int position)
     {
         long currentTimestamp = timeUtil.GetTimeStamp();
         SellConfig sellConfig = presetService.Config.Core.SellConfig;
