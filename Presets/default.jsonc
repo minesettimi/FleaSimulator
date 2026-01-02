@@ -34,6 +34,7 @@
     "wipePrices":
     {
       "enabled": true,
+      "disableAboveLevel": 15, //if a profile already exists during market generation above this level, disable (-1 to not disable)
       "balancedPricing": false, //enables caps such as having a minimum of trader prices if enabled
       "startLength": 10.0, //how long the start of a wipe lasts in days
       "earlyQuantityMult": 0.2 //multiplier to item quantity during early wipe, minimum quantity is 1

@@ -4,7 +4,9 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
@@ -20,6 +22,7 @@ public class ItemDataService
         DatabaseService databaseService,
         ItemHelper itemHelper,
         DatabaseService database,
+        SaveServer saveServer,
         ICloner cloner)
 {
     public SaveState CurrentState;
@@ -83,11 +86,32 @@ public class ItemDataService
         
         WipePriceConfig wipePriceConfig = preset.Config.Core.WipePrices;
         newState.WipeState = wipePriceConfig.Enabled ? WipeState.Start : WipeState.Middle;
+        
+        logger.Info($"[FleaSimulator] Generating new market at state: {newState.WipeState}.");
+        if (wipePriceConfig.DisableLevel != -1)
+        {
+            int maxLevel = 0;
+            
+            foreach ((MongoId session, SptProfile profile) in saveServer.GetProfiles())
+            {
+                if (saveServer.IsProfileInvalidOrUnloadable(session))
+                    continue;
 
+                int level = profile.CharacterData?.PmcData?.Info?.Level ?? 0;
+
+                if (level > maxLevel)
+                    maxLevel = level;
+            }
+
+            if (maxLevel >= wipePriceConfig.DisableLevel)
+            {
+                newState.WipeState = WipeState.Middle;
+                logger.Info($"[FleaSimulator] Profile found with level {maxLevel}, force skipping early wipe.");
+            }
+        }
+        
         if (newState.WipeState == WipeState.Start)
             newState.WipeChange = DateTime.Now.AddDays(wipePriceConfig.StartLength);
-        
-        logger.Info($"[FleaSimulator] Generating market at state: {newState.WipeState}, {wipePriceConfig.Enabled}");
 
         foreach ((MongoId key, TemplateItem item) in items)
         {
@@ -111,7 +135,7 @@ public class ItemDataService
 
             double earlyWipeMult = 1d;
 
-            if (wipePriceConfig.Enabled)
+            if (newState.WipeState == WipeState.Start)
                 earlyWipeMult = category.EarlyWipeMult;
 
             int startingPrice = Convert.ToInt32(Math.Round(convertedValue * earlyWipeMult));

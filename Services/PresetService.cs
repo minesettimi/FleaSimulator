@@ -26,14 +26,15 @@ public class PresetService
     {
         LoaderConfig? tempLoader = await jsonUtil.DeserializeFromFileAsync<LoaderConfig>(Path.Join(ModPath, "loader.json"));
 
-        if (tempLoader == null)
+        if (tempLoader is null)
         {
             tempLoader = new LoaderConfig();
             await File.WriteAllTextAsync(Path.Join(ModPath, "loader.json"), 
                 jsonUtil.Serialize(tempLoader, true));
-            loader = tempLoader;
         }
-        
+
+        loader = tempLoader;
+
         CurrentPreset = loader.Preset;
 
         PresetConfig? config = await jsonUtil.DeserializeFromFileAsync<PresetConfig>(Path.Join(ModPath, "Presets", $"{CurrentPreset}.jsonc"));

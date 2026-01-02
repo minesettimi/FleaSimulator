@@ -37,17 +37,17 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
     private readonly MethodBase _createSingleOffer = typeof(RagfairOfferGenerator)
         .GetMethod("CreateSingleOfferForItem",  BindingFlags.Instance | BindingFlags.NonPublic)!;
     
-    public void CreateOffersFromAssorts(List<Item> assortItems, bool isExpired)
+    public bool CreateOffersFromAssorts(List<Item> assortItems, bool isExpired)
     {
         Item? rootItem = assortItems.FirstOrDefault();
 
         if (rootItem == null)
-            return;
+            return false;
 
         KeyValuePair<bool, TemplateItem?> sellDetails = itemHelper.GetItem(rootItem.Template);
 
         if (!serverHelper.IsItemValidRagfairItem(sellDetails))
-            return;
+            return false;
         
         bool isPreset = rootItem.Upd?.SptPresetId is not null && presetHelper.IsPreset(rootItem.Upd.SptPresetId.Value);
         if (isPreset && _ragfairConfig.Dynamic.Blacklist.EnableBsgList)
@@ -56,7 +56,11 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
         }
         
         //override offer counts
-        ItemState itemState = itemService.CurrentState.Items[sellDetails.Value!.Id];
+        ItemState? itemState = itemService.CurrentState.Items.GetValueOrDefault(sellDetails.Value!.Id);
+
+        if (itemState == null)
+            return false;
+        
         CategoryConfig category = itemState.Category;
         
         BuyConfig buyConfig = presetService.Config.Core.BuyConfig;
@@ -92,5 +96,7 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
                 OfferCreator.FakePlayer
             ]);
         }
+
+        return true;
     }
 }

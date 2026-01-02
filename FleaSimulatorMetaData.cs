@@ -12,7 +12,7 @@ public static class FleaSimulatorMetaData
         public override string Name { get; init; } = "Advanced Flea Market Simulator";
         public override string Author { get; init; } = "minesettimi";
         public override List<string>? Contributors { get; init; }
-        public override Version Version { get; init; } = new(1, 0, 1);
+        public override Version Version { get; init; } = new(1, 0, 2);
         public override Range SptVersion { get; init; } = new("~4.0.4");
         
         public override List<string>? Incompatibilities { get; init; } = ["xyz.drakia.livefleaprices", "com.acidphantasm.delayedfleasales"];
