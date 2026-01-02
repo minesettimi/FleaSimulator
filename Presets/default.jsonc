@@ -5,31 +5,31 @@
     "name": "Default",
     "author": "minesettimi",
     
-    //configuration for players buying from the flea
+    //configuration for fake PMC offer behaviors on the flea
     "buy":
     {
       "enabled": true,
       "canHaveNoOffers": false, //items can generate with 0 offers
-      "traderPrices": true, //simulation won't go below best trader price
-      "useHandbook": false, //use handbook prices over cached flea for base prices
+      "traderPrices": true, //simulation won't go below best price to sell item to trader
+      "useHandbook": false, //use handbook prices over cached flea prices for base prices
       "enableBarter": false, //enable barter offers on the flea market
-      "supplyMinOffers": 2, //offers available for items at minimum supply (0.01) 
-      "supplyMaxOffers": 20, //offers available at maximum supply (1.0)
-      "supplyOfferOffset": 3, //+- to the offer count by rng
-      "supplyMinQuantity": 1, //average quantity of an non-stackable item at lowest supply
-      "supplyMaxQuantity": 5 //average quantity at highest
+      "supplyMinOffers": 2, //offers available for items at minimum supply
+      "supplyMaxOffers": 20, //offers available at maximum supply
+      "supplyOfferOffset": 3, //maximum and minimum +- offset can rng be added to the fake offer count
+      "supplyMinQuantity": 1, //average quantity of an non-stackable item at minimum supply
+      "supplyMaxQuantity": 5 //average quantity at maximum
     },
-    //configuration for players selling on the flea
+    //configuration for selling on the flea
     "sell":
     {
       "enabled": true,
-      "supplyMinPosition": 2, //highest position in the flea list for an item to be 0% sell chance at minimum supply starting from 0 (0.01)
-      "supplyMaxPosition": 10, //position in the flea at maximum supply (1.0)
-      "demandMinBuyChance": 50.0, //chance an item is bought at the lowest position when at minimum demand (0.01) 
-      "demandMaxBuyChance": 100.0, //chance at maximum demand (1.0)
-      "demandMinDelay": 3600, //max delay for an item to be sold when at minimum demand in seconds (0.01)
-      "demandMaxDelay": 0, //max delay at maximum demand (1.0)
-      "posDelay": 30 //how many seconds to add to the delay for each position past 0
+      "supplyMinPosition": 2, //highest position in the flea list for an item to be 0% sell chance at minimum supply starting from 0
+      "supplyMaxPosition": 10, //position in the flea at maximum supply
+      "demandMinBuyChance": 50.0, //chance an item is bought at the lowest position when at minimum demand 
+      "demandMaxBuyChance": 100.0, //chance at maximum demand
+      "demandMinDelay": 3600, //max delay for an item to be sold when at minimum demand in seconds
+      "demandMaxDelay": 0, //max delay at maximum demand
+      "posDelay": 30 //how many seconds to add to the delay for each position the offer placed is past 0
     },
     //progression of prices over a simulated wipe (THIS DOES !NOT! WIPE YOUR CHARACTER!)
     "wipePrices":
@@ -286,22 +286,22 @@
     {
       "valueMult": 1.0, //multiplies the base game baseline value
       "earlyWipeMult": 5.0, //multiplies the value at the "wipe start", this multiplier is dynamically lowered over time
-      "chaos": 0.2, //how chaotic an item is, higher values cause the prices to be more unpredictable (0.01 - 1.0)
+      "chaos": 0.2, //how chaotic an item is, higher values cause the prices to be more unpredictable (0 - 1)
       "chaosMinVal": 0.9, //how far below the base price can the chaos go (multiplier)
-      "chaosMaxVal": 1.1, //how far above the base price can the chaos go 
-      "chaosMinIter": 0, //min number of times can chaos be applied to an item (higher numbers are rarer)
+      "chaosMaxVal": 1.1, //how far above the base price can the chaos go (multiplier)
+      "chaosMinIter": 0, //min number of times can chaos be applied to an item (higher numbers are rarer) (above 0)
       "chaosMaxIter": 3, //max number of times
       "chaosMinOffset": -0.05, //lowest percentage that values can be offset by chaos
       "chaosMaxOffset": 0.05, //highest percentage
-      "chaosChance": 0.75, //chance that chaos effects a property
-      "settleSpeed": 0.0005, //percentage speed price returns to a stable price, higher numbers make prices jump around far less
-      "settleSpeedBelow": 0.001, //settle only raises prices that drop below the true value
-      "minOfferPrice": 0.95, //how far below the base price can offers be placed
-      "maxOfferPrice": 1.1, //how far above the bace price can offers be placed
-      "maxValue": 10.0, //cap on how far above the base price can an item be simulated
-      "demand": 0.5, //theoretical demand for the item, does not affect price but changes sell chance (0.01 - 1.0)
-      "supply": 0.4, //theoretical supply for the item, does not affect price but changes offer count (0.01 - 1.0)
-      "simChance": 1.0 //chance the items prices are simulated
+      "chaosChance": 0.75, //chance that chaos effects a property (0 - 1)
+      "settleSpeed": 0.0005, //percentage of the price that moves to a stable price from above the stable price (0 - 1)
+      "settleSpeedBelow": 0.001, //percentage of the price from below (0 - 1)
+      "minOfferPrice": 0.95, //multiplier for minimum below the base price can fake offers be placed
+      "maxOfferPrice": 1.1, //multiplier for maximum above the bace price can fake offers be placed
+      "maxValue": 10.0, //multiplier cap on how far above the base price can an item be simulated
+      "demand": 0.5, //theoretical demand for the item, does not affect price but changes sell chance (0 - 1)
+      "supply": 0.4, //theoretical supply for the item, does not affect price but changes offer count (0 - 1)
+      "simChance": 1.0 //chance the items prices are simulated (0 - 1)
     }
   }
 }
