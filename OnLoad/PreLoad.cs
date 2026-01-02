@@ -1,3 +1,4 @@
+using FleaSimulator.Helpers;
 using FleaSimulator.Overrides.Controllers;
 using FleaSimulator.Overrides.Generators;
 using FleaSimulator.Overrides.Helpers;
@@ -14,8 +15,8 @@ using SPTarkov.Server.Core.Servers;
 namespace FleaSimulator.OnLoad;
 
 [Injectable(TypePriority = OnLoadOrder.PreSptModLoader)]
-public class PreLoad(PresetService presetService, 
-    ConfigServer configServer) : IOnLoad
+public class PreLoad(PresetService presetService,
+    RagfairConfigHelper configHelper) : IOnLoad
 {
     private readonly List<AbstractPatch> _patches =
     [
@@ -32,25 +33,7 @@ public class PreLoad(PresetService presetService,
     public async Task OnLoad()
     {
         await presetService.OnLoad();
-        
-        RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
-
-        ragfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice = false;
-        
-        //override refresh system
-        ragfairConfig.Dynamic.ExpiredOfferThreshold = 0;
-
-        if (!presetService.Config.Core.BuyConfig.EnableBarter)
-            ragfairConfig.Dynamic.Barter.ChancePercent = 0.0;
-            
-        //disable unreasonable price caps
-        if (presetService.Config.Core.UnreasonablePrices)
-        {
-            foreach (KeyValuePair<MongoId, UnreasonableModPrices> modPrice in ragfairConfig.Dynamic.UnreasonableModPrices)
-            {
-                modPrice.Value.Enabled = false;
-            }
-        }
+        await configHelper.OnLoad();
         
         //enable overrides
         foreach (AbstractPatch patch in _patches)

@@ -68,13 +68,13 @@ public class PresetService
     {
         CoreConfig coreConfig = Config.Core;
         
-        if (coreConfig.UpdateInterval <= 0)
+        if (coreConfig.UpdateInterval < 1)
         {
             logger.Warning("[FleaSimulator] Update interval is too low! Setting to 1.");
             coreConfig.UpdateInterval = 1;
         }
 
-        if (coreConfig.SimulationInterval <= 0)
+        if (coreConfig.SimulationInterval < 1)
         {
             logger.Warning("[FleaSimulator] Simulation interval is too low! Setting to 1.");
             coreConfig.SimulationInterval = 1;

@@ -9,6 +9,7 @@ public class CoreConfig
     [JsonPropertyName("buy")] public BuyConfig BuyConfig { get; set; } = new();
     [JsonPropertyName("sell")] public SellConfig SellConfig { get; set; } = new();
     [JsonPropertyName("wipePrices")] public WipePriceConfig WipePrices { get; set; } = new();
+    [JsonPropertyName("progressiveFlea")] public ProgressiveConfig ProgressiveFlea { get; set; } = new();
     [JsonPropertyName("updateInterval")] public double UpdateInterval { get; set; } = 60.0;
     [JsonPropertyName("simInterval")] public double SimulationInterval { get; set; } = 60.0;
     [JsonPropertyName("interpSim")] public bool InterpSimulation { get; set; } = true;

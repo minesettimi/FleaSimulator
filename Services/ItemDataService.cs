@@ -53,8 +53,6 @@ public class ItemDataService
             long nextTimeDiff = loadedState.NextUpdate - loadedState.UpdateTime;
             long interpDiff = difference - nextTimeDiff;
             
-            
-            
             int simTimeSecs = (int)Math.Round(preset.Config.Core.SimulationInterval * 60);
             
             

@@ -40,9 +40,17 @@
       "startLength": 10.0, //how long the start of a wipe lasts in days
       "earlyQuantityMult": 0.2 //multiplier to item quantity during early wipe, minimum quantity is 1
     },
+    //a progressive flea system where certain item categories are unlocked by level
+    "progressiveFlea":
+    {
+      "enabled": false,
+      "fullUnlockSystem": false, //if true, everything is given a level and the flea is unlocked at level 1
+      "defaultLevel": 15 //default unlock level for everything
+    },
     "updateInterval": 15, //how often in minutes that all flea market offers are regenerated
     "simInterval": 30, //how often in minutes the flea market is simulated
     "interpSim": true, //should the mod run every simulation not carried out when it starts up
+    "overrideUnreasonablePrices": true, //should SPT's unreasonable price system be disabled
     "debug": false,
     "debugSimulation": false,
     "debugItem": ""
@@ -56,9 +64,7 @@
     "parents": 
     {
       "55818aeb4bdc2ddc698b456a": "ExtremelyRare", //specialty scopes
-      "57864a66245977548f04a81f": "Hideout", //electronics
-      "57864ada245977548638de91": "Hideout", //building material
-      "57864e4c24597754843f8723": "Hideout", //flammables
+      "57864a3d24597754843f8721": "SuperRare", //valuables
       "5c99f98d86f7745c314214b3": "Key", //mechanical keys
       "5c164d2286f774194c5e69fa": "ExtremelyRare", //keycards
       "543be6674bdc2df1348b4569": "Food", //food and drinks
@@ -73,7 +79,8 @@
       "5448fe124bdc2da5018b4567": "Common", //weapon mods
       "5485a8684bdc2da71d8b4567": "Rare", //ammo
       "5422acb9af1c889c16000029": "Weapon", //weapons
-      "590c745b86f7743cc433c5f2": "Crafting" //other
+      "590c745b86f7743cc433c5f2": "Crafting", //other
+      "5448eb774bdc2d0a728b4567": "Hideout" //barter items
       
     },
     //categories for specific items, this overrides categories
@@ -303,6 +310,137 @@
       "demand": 0.5, //theoretical demand for the item, does not affect price but changes sell chance (0 - 1)
       "supply": 0.4, //theoretical supply for the item, does not affect price but changes offer count (0 - 1)
       "simChance": 1.0 //chance the items prices are simulated (0 - 1)
+    }
+  },
+  //decides which levels items are unlocked for progressive flea market, only applies when enabled
+  //this does not have the same priorities as the item categories, this will pick the highest level amongst parents
+  "progressive":
+  {
+    "parents":
+    {
+      "57864ada245977548638de91": 15, //building material
+      "57864a3d24597754843f8721": 30, //valuables
+
+      "5795f317245977243854e041": 25, //cases
+      "644120aa86ffbe10ee032b6f": 30, //armored plates
+      "5b3f15d486f77432d0509248": 30, //armbands
+      "5a341c4086f77401f2541505": 20, //helmets
+      "5448e53e4bdc2d60728b4567": 25, //backpacks
+      "5448e5724bdc2ddf718b4568": 20, //glasses
+      "57bef4c42459772e8d35a53b": 30, //armored equipment
+
+      "55818add4bdc2d5b648b456f": 25, //assault scope
+      "55818ad54bdc2ddc698b4569": 25, //collimator
+      "55818acf4bdc2dde698b456b": 25, //compact collimator
+      "55818ae44bdc2dde698b456c": 25, //optics
+      "55818aeb4bdc2ddc698b456a": 25, //special scope
+
+      "5448fe394bdc2d0d028b456c": 20, //muzzle
+      "550aa4cd4bdc2dd8348b456c": 25, //silencers
+      "55818af64bdc2d5b648b4570": 20, //foregrips
+      "55818b164bdc2ddc698b456c": 25, //devices
+
+      "55818a6f4bdc2db9688b456b": 20, //charging handle
+      "5448bc234bdc2d3c308b4569": 25, //mag
+      "55818a594bdc2db9688b456a": 20, //stock
+
+      "5447b5f14bdc2d61278b4567": 25, //assault rifle
+      "5447b6254bdc2dc3278b4568": 20, //bolt action
+      "5447bed64bdc2d97278b4568": 25, //machine guns
+      "5447b6194bdc2d67278b4567": 25, //marksman
+      "5447b5e04bdc2d62278b4567": 20, //submachine guns
+      "543be6564bdc2df4348b4568": 25, //grenades
+
+      "5448f3a64bdc2d60728b456a": 30, //stims
+      "5448f3ac4bdc2dce718b4569": 20, //medical
+      "590c695186f7741e566b64a2": 20, //pills
+
+      "5c99f98d86f7745c314214b3": 25, //mechanical keys
+      "5c164d2286f774194c5e69fa": 30, //keycards
+
+      "543be5cb4bdc2deb348b4568": 25, //ammo boxes
+      "590c745b86f7743cc433c5f2": 25, //other
+      "5448eb774bdc2d0a728b4567": 20 //barter item
+    },
+    "individual":
+    {
+      //cases
+      "619cbf7d23893217ec30b689": 35,
+      "5d235bb686f77443f4331278": 40,
+
+      //armor plates
+      "656f611f94b480b8a500c0db": 40,
+      "656f664200d62bcd2e024077": 40,
+
+      //helmets
+      "5b4329f05acfc47a86086aa1": 40,
+      "5ca20ee186f774799474abc2": 40,
+
+      //medical
+      "5c0530ee86f774697952d952": 35,
+
+      //craftables
+      "5d6fc78386f77449d825f9dc": 30,
+      "5d6fc87386f77449db3db94e": 30,
+
+      //batteries
+      "5d03794386f77420415576f5": 40,
+      "5e2aedd986f7746d404f3aa4": 35,
+
+      //electronics
+      "57347ca924597744596b4e71": 40,
+      "5d0376a486f7747d8050965c": 35,
+      "5d0378d486f77420421a5ff4": 35,
+      "5d03775b86f774203e7e0c4b": 40,
+      "5c12620d86f7743f8b198b72": 35,
+      "5c052fb986f7746b2101e909": 35,
+      "5c05300686f7746dce784e5d": 35,
+      "5c05308086f7746b2101e90b": 35,
+
+      //other
+      "5d1b2f3f86f774252167a52c": 35,
+
+      //medical
+      //stims
+      "5ed51652f6c34d2cc26336a1": 40,
+      "5c0e534186f7747fa1419867": 40,
+
+      //treatment
+      "5e8488fa988a8701445df1e4": 30,
+      "5d02797c86f774203f38e30a": 35,
+
+      //medkits
+      "60098ad7c2240c0fe85c570a": 30,
+      "590c657e86f77412b013051d": 30,
+
+      //weapons
+      "627e14b21713922ded6f2c15": 40,
+      "5fc22d7c187fea44d52eda44": 40,
+      "64637076203536ad5600c990": 40,
+      "66ffa9b66e19cc902401c5e8": 40,
+      "67124dcfa3541f2a1f0e788b": 40,
+      "674fe9a75e51f1c47c04ec23": 40,
+
+      //marked keys
+      "5780cf7f2459777de4559322": 35,
+      "5d80c62a86f7744036212b3f": 35,
+      "5d80c60f86f77440373c4ece": 35,
+      "5ede7a8229445733cb4c18e2": 35,
+      "62987dfc402c7f69bf010923": 35,
+      "63a3a93f8a56922e82001f5d": 35,
+
+      //weapon parts
+      //scopes
+      "57ac965c24597706be5f975c": 35,
+      "57aca93d2459771f2c7e26db": 35,
+      "5c0517910db83400232ffee5": 35,
+
+      //optics
+      "5b2388675acfc4771e1be0be": 35,
+      "5b3b99475acfc432ff4dcbee": 40,
+      "6567e7681265c8a131069b0f": 40,
+      "617151c1d92c473c770214ab": 40,
+      "618ba27d9008e4636a67f61d": 40
     }
   }
 }
