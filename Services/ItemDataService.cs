@@ -26,6 +26,8 @@ public class ItemDataService
         ICloner cloner)
 {
     public SaveState CurrentState;
+    public int InterpSimulations = 0;
+    
     private Dictionary<MongoId, double> originalItems;
     
     public async Task OnLoad()
@@ -43,15 +45,42 @@ public class ItemDataService
         else
         {
             //update unix times to match the current time
-            //this isn't 100% foolproof as updatetime isn't always updated
+            //this isn't 100% accurate as updatetime isn't constantly updated
             long current = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             
             //time between the last update and loading the data
             long difference = current - loadedState.UpdateTime;
+            long nextTimeDiff = loadedState.NextUpdate - loadedState.UpdateTime;
+            long interpDiff = difference - nextTimeDiff;
             
-            //shift all times
-            loadedState.LastUpdate += difference;
-            loadedState.NextUpdate += difference;
+            
+            
+            int simTimeSecs = (int)Math.Round(preset.Config.Core.SimulationInterval * 60);
+            
+            
+            if (preset.Config.Core.InterpSimulation)
+            {
+                if (interpDiff > 0)
+                {
+                    //add one since there was enough time since the last update to reach the next update
+                    InterpSimulations = (int)Math.Floor(interpDiff / (double)simTimeSecs) + 1;
+                    loadedState.NextUpdate = current + interpDiff % simTimeSecs; //set next update to whatever time is remaining
+                }
+                else
+                {
+                    loadedState.NextUpdate = current - interpDiff; //there isn't enough difference, set to whatever time is left
+                }
+
+                
+                loadedState.LastUpdate = loadedState.NextUpdate - simTimeSecs;
+            }
+            else
+            {
+                //don't sim inbetween, shift times to pick up where we left off
+                loadedState.LastUpdate += difference;
+                loadedState.NextUpdate += difference;
+            }
+            
             loadedState.UpdateTime = current;
             
             MapCategories(loadedState);

@@ -26,6 +26,23 @@ public class SimulationService(PresetService preset,
     
     public Task OnLoad()
     {   
+        //run simulations to catch up since last time
+        if (preset.Config.Core.InterpSimulation && itemData.InterpSimulations > 0)
+        {
+            Stopwatch stopwatch = new();
+            
+            logger.Info($"[FleaSimulator] Running {itemData.InterpSimulations} missed simulations.");
+            stopwatch.Start();
+            
+            for (int i = 0; i < itemData.InterpSimulations; i++)
+            {
+                SimulateEveryItem();
+            }
+            
+            stopwatch.Stop();
+            logger.Info($"[FleaSimulator] Finished catching up at {stopwatch.ElapsedMilliseconds}ms.");
+        }
+        
         //calculate when first simulation should occur
         long updateLeft = itemData.CurrentState.NextUpdate - itemData.CurrentState.UpdateTime;
         
@@ -39,7 +56,7 @@ public class SimulationService(PresetService preset,
         return Task.CompletedTask;
     }
 
-    private void SimulateMarket()
+    public void SimulateMarket()
     {
         Stopwatch stopwatch = new();
         
@@ -49,7 +66,7 @@ public class SimulationService(PresetService preset,
 
         if (state.WipeState == WipeState.Start && DateTime.Now > state.WipeChange)
         {
-            logger.Info("[FleaSimulator] Wipe middle has begun.");
+            logger.Info("[FleaSimulator] Early wipe has ended.");
             state.WipeState = WipeState.Middle;
         }
         
@@ -58,10 +75,7 @@ public class SimulationService(PresetService preset,
         if (state.NextUpdate > DateTimeOffset.UtcNow.ToUnixTimeSeconds())
             return;
         
-        foreach ((MongoId key, ItemState item) in state.Items)
-        {
-            SimulateItem(key, item);
-        }
+        SimulateEveryItem();
         
         state.LastUpdate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         state.UpdateTime = state.LastUpdate;
@@ -72,6 +86,16 @@ public class SimulationService(PresetService preset,
         stopwatch.Stop();
         
         logger.Info($"[FleaSimulator] Finished simulation in {stopwatch.ElapsedMilliseconds}ms.");
+    }
+
+    public void SimulateEveryItem()
+    {
+        SaveState state = itemData.CurrentState;
+        
+        foreach ((MongoId key, ItemState item) in state.Items)
+        {
+            SimulateItem(key, item);
+        }
     }
 
     public void SimulateItem(MongoId id, ItemState item, DateTime? time = null)
