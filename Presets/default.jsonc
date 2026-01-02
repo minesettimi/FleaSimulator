@@ -9,9 +9,10 @@
     "buy":
     {
       "enabled": true,
-      "canHaveNoOffers": true, //items can generate with 0 offers
+      "canHaveNoOffers": false, //items can generate with 0 offers
       "traderPrices": true, //simulation won't go below best trader price
       "useHandbook": false, //use handbook prices over cached flea for base prices
+      "enableBarter": false, //enable barter offers on the flea market
       "supplyMinOffers": 2, //offers available for items at minimum supply (0.01) 
       "supplyMaxOffers": 20, //offers available at maximum supply (1.0)
       "supplyOfferOffset": 3, //+- to the offer count by rng
@@ -40,7 +41,7 @@
       "earlyQuantityMult": 0.2 //multiplier to item quantity during early wipe, minimum quantity is 1
     },
     "updateInterval": 15, //how often in minutes that all flea market offers are regenerated
-    "simInterval": 30, //how often in minutes the flea market is simulated    
+    "simInterval": 30, //how often in minutes the flea market is simulated
     "debug": false,
     "debugSimulation": false,
     "debugItem": ""

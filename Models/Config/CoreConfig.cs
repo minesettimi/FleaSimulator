@@ -23,6 +23,7 @@ public class BuyConfig
     [JsonPropertyName("canHaveNoOffers")] public bool CanHaveNoOffers { get; set; } = true;
     [JsonPropertyName("traderPrices")] public bool TraderPrices { get; set; } = false;
     [JsonPropertyName("useHandbook")] public bool UseHandbook { get; set; } = false;
+    [JsonPropertyName("enableBarter")] public bool EnableBarter { get; set; } = false;
     [JsonPropertyName("supplyMinOffers")] public int SupplyMinOffers { get; set; } = 2;
     [JsonPropertyName("supplyMaxOffers")] public int SupplyMaxOffers { get; set; } = 20;
     [JsonPropertyName("supplyOfferOffset")] public int SupplyOfferOffset { get; set; } = 1;

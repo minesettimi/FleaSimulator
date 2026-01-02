@@ -37,9 +37,12 @@ public class PreLoad(PresetService presetService,
 
         ragfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice = false;
         
-        //completely override refresh system
+        //override refresh system
         ragfairConfig.Dynamic.ExpiredOfferThreshold = 0;
 
+        if (!presetService.Config.Core.BuyConfig.EnableBarter)
+            ragfairConfig.Dynamic.Barter.ChancePercent = 0.0;
+            
         //disable unreasonable price caps
         if (presetService.Config.Core.UnreasonablePrices)
         {

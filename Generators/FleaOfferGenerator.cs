@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
@@ -29,6 +30,7 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
     RandomUtil randomUtil,
     ChaosHelper chaosHelper,
     ICloner cloner,
+    RagfairOfferHolder offerHolder,
     ISptLogger<FleaOfferGenerator> logger)
 {
     private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
@@ -56,7 +58,9 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
         }
         
         //override offer counts
-        ItemState? itemState = itemService.CurrentState.Items.GetValueOrDefault(sellDetails.Value!.Id);
+        MongoId tplId = sellDetails.Value.Id;
+        
+        ItemState? itemState = itemService.CurrentState.Items.GetValueOrDefault(tplId);
 
         if (itemState == null)
             return false;
@@ -65,19 +69,20 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
         
         BuyConfig buyConfig = presetService.Config.Core.BuyConfig;
 
-        int offerTotal = 1;
-
-        if (!isExpired)
-        {
-            offerTotal = (int)Math.Round(mathUtil.MapToRange(category.Supply, 0,
-                1.0, buyConfig.SupplyMinOffers, buyConfig.SupplyMaxOffers));
+        int offerTotal = (int)Math.Round(mathUtil.MapToRange(category.Supply, 0,
+            1.0, buyConfig.SupplyMinOffers, buyConfig.SupplyMaxOffers));
+    
+        int offerDiff = randomUtil.GetInt(-buyConfig.SupplyOfferOffset, buyConfig.SupplyOfferOffset);
+        offerDiff = chaosHelper.ChaosShift(category, offerDiff);
+    
+        offerTotal += offerDiff;
         
-            int offerDiff = randomUtil.GetInt(-buyConfig.SupplyOfferOffset, buyConfig.SupplyOfferOffset);
-            offerDiff = chaosHelper.ChaosShift(category, offerDiff);
+        //if offers have already existed, reduce count by number of offers to maintain offer counts
+        //this fixes an issue where offers add up on server start
+        IEnumerable<RagfairOffer>? offers = offerHolder.GetOffersByTemplate(tplId);
+        offerTotal -= offers?.Count() ?? 0;
         
-            offerTotal += offerDiff;
-            offerTotal = Math.Max(offerTotal, buyConfig.CanHaveNoOffers ? 0 : 1);
-        }
+        offerTotal = Math.Max(offerTotal, buyConfig.CanHaveNoOffers ? 0 : 1);
         
         for (int i = 0; i < offerTotal; i++)
         {

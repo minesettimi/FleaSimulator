@@ -6,11 +6,8 @@ using FleaSimulator.Services;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Generators;
-using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Services;
 
 namespace FleaSimulator.Overrides.Generators;
 
@@ -50,12 +47,13 @@ public class GenerateDynamicOffersOverride : AbstractPatch
     }
 
     [PatchPrefix]
-    public static bool Prefix()
+    public static bool Prefix(ref IEnumerable<List<Item>>? expiredOffers)
     {
         if (!presetService.Config.Core.BuyConfig.Enabled)
             return true;
         
         offerHelper.UpdatePrices();
+        expiredOffers = null;
         
         return true;
     }
