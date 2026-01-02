@@ -34,18 +34,21 @@ public class OfferHelper(DatabaseService database,
     private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
     private readonly MethodBase _getWeaponPresetprice = typeof(RagfairPriceService)
         .GetMethod("GetWeaponPresetPrice", BindingFlags.Instance | BindingFlags.NonPublic)!;
-    
-    public void UpdatePrices()
-    {
-        logger.Info("[FleaSimulator] Updating offer prices.");
 
-        Dictionary<MongoId, double> priceTable = database.GetPrices();
-        
+    public void UpdatePrices(bool onlyTime)
+    {
         SaveState currentState = dataService.CurrentState;
         
         //update state
         currentState.UpdateTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         dataService.SaveCurrentState();
+
+        if (onlyTime)
+            return;
+        
+        logger.Info("[FleaSimulator] Updating offer prices.");
+
+        Dictionary<MongoId, double> priceTable = database.GetPrices();
 
         //update all prices
         Dictionary<MongoId, ItemState> itemStates = dataService.CurrentState.Items;

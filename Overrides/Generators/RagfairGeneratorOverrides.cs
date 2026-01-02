@@ -50,9 +50,12 @@ public class GenerateDynamicOffersOverride : AbstractPatch
     public static bool Prefix(ref IEnumerable<List<Item>>? expiredOffers)
     {
         if (!presetService.Config.Core.BuyConfig.Enabled)
+        {
+            offerHelper.UpdatePrices(true); //updateTime should be updated still
             return true;
+        }
         
-        offerHelper.UpdatePrices();
+        offerHelper.UpdatePrices(false);
         expiredOffers = null;
         
         return true;
