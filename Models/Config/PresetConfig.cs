@@ -13,6 +13,6 @@ public class PresetConfig
     [JsonPropertyName("items")] public ItemConfig Items { get; set; } = new();
     [JsonPropertyName("progressive")] public ProgressiveItemConfig ProgressiveItem { get; set; } = new();
     [JsonPropertyName("categories")] public Dictionary<string, SavedCategoryConfig> SavedCategories { get; set; } = new();
-    
+
     [JsonIgnore] public Dictionary<string, CategoryConfig> Categories { get; set; } = new();
 }

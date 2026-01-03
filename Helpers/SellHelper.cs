@@ -40,23 +40,25 @@ public class SellHelper(PresetService presetService,
     FleaMathUtil fleaMathUtil,
     ISptLogger<SellHelper> logger)
 {
-    
-    //I would like to not have to recreate all of these functions but the functions I want to override are passed no item data
-    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    
-    private readonly MethodBase _getFromInventory = typeof(RagfairController)
-        .GetMethod("GetItemsToListOnFleaFromInventory", BindingFlags.Instance | BindingFlags.NonPublic)!;
-    private readonly MethodBase _createPlayerOffer = typeof(RagfairController)
-        .GetMethod("CreatePlayerOffer", BindingFlags.Instance | BindingFlags.NonPublic)!;
     private readonly MethodBase _calculateRequirements = typeof(RagfairController)
         .GetMethod("CalculateRequirementsPriceInRub", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
     private readonly MethodBase _chargePlayerTaxFee = typeof(RagfairController)
         .GetMethod("ChargePlayerTaxFee", BindingFlags.Instance | BindingFlags.NonPublic)!;
-    
+
+    private readonly MethodBase _createPlayerOffer = typeof(RagfairController)
+        .GetMethod("CreatePlayerOffer", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+    private readonly MethodBase _getFromInventory = typeof(RagfairController)
+        .GetMethod("GetItemsToListOnFleaFromInventory", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
     private readonly Type _getItemsToList = typeof(RagfairController)
         .GetNestedType("GetItemsToListOnFleaFromInventoryResult",
             BindingFlags.Instance | BindingFlags.NonPublic)!;
-    
+
+    //I would like to not have to recreate all of these functions but the functions I want to override are passed no item data
+    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+
     public ItemEventRouterResponse? CreatePackOffer(
         MongoId sessionID,
         AddOfferRequestData offerRequest,
@@ -128,7 +130,7 @@ public class SellHelper(PresetService presetService,
 
         return output;
     }
-    
+
     public ItemEventRouterResponse? CreateMultiOffer(
         MongoId sessionID,
         AddOfferRequestData offerRequest,
@@ -201,7 +203,7 @@ public class SellHelper(PresetService presetService,
 
         return output;
     }
-    
+
     public ItemEventRouterResponse? CreateSingleOffer(
         MongoId sessionID,
         AddOfferRequestData offerRequest,

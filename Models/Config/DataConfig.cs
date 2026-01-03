@@ -1,8 +1,6 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
-using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Utils;
 
 namespace FleaSimulator.Models.Config;
 

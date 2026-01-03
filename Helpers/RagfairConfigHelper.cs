@@ -15,7 +15,7 @@ public class RagfairConfigHelper(ConfigServer configServer,
     PresetService presetService)
 {
     private readonly RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    
+
     public Task OnLoad()
     {
         

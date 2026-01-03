@@ -31,9 +31,10 @@ public class OfferHelper(DatabaseService database,
     ISptLogger<OfferHelper> logger
     )
 {
-    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
     private readonly MethodBase _getWeaponPresetprice = typeof(RagfairPriceService)
         .GetMethod("GetWeaponPresetPrice", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     public void UpdatePrices(bool onlyTime)
     {

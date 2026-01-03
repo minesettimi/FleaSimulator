@@ -14,7 +14,7 @@ public class UpdateOverride : AbstractPatch
 {
     private static PresetService _presetService;
     private static long lastUpdate;
-    
+
     protected override MethodBase? GetTargetMethod()
     {
         _presetService = ServiceLocator.ServiceProvider.GetRequiredService<PresetService>()!;

@@ -15,7 +15,7 @@ public class CreatePackOfferOverride : AbstractPatch
 {
     private static PresetService presetService;
     private static SellHelper sellHelper;
-    
+
     protected override MethodBase? GetTargetMethod()
     {
         presetService = ServiceLocator.ServiceProvider.GetRequiredService<PresetService>();
@@ -51,7 +51,7 @@ public class CreateMultiOfferOverride : AbstractPatch
 {
     private static PresetService presetService;
     private static SellHelper sellHelper;
-    
+
     protected override MethodBase? GetTargetMethod()
     {
         presetService = ServiceLocator.ServiceProvider.GetRequiredService<PresetService>();
@@ -86,7 +86,7 @@ public class CreateSingleOfferOverride : AbstractPatch
 {
     private static PresetService presetService;
     private static SellHelper sellHelper;
-    
+
     protected override MethodBase? GetTargetMethod()
     {
         presetService = ServiceLocator.ServiceProvider.GetRequiredService<PresetService>();

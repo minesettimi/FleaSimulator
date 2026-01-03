@@ -1,5 +1,4 @@
 using FleaSimulator.Models.Config;
-using FleaSimulator.Services;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;

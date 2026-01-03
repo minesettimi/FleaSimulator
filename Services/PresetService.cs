@@ -1,5 +1,4 @@
 using System.Reflection;
-using FleaSimulator.Models;
 using FleaSimulator.Models.Config;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
@@ -14,11 +13,10 @@ public class PresetService
         JsonUtil jsonUtil, 
         ISptLogger<PresetService> logger)
 {
+    private LoaderConfig loader;
     public PresetConfig Config { get; private set; }
     public CategoryConfig DefaultCategoryConfig { get; private set; } = CategoryConfig.GenerateDefault();
     public string CurrentPreset { get; private set; } = "default";
-    
-    private LoaderConfig loader;
 
     public string ModPath => helper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
 
@@ -98,7 +96,7 @@ public class PresetService
 
         //TODO: ADD MORE VALIDATIONS
     }
-    
+
     //migrate all saved categories to regular categories
     //this bypasses having to null check EVERYWHERE that a category is used
     private void AssignCategoryDefaults()

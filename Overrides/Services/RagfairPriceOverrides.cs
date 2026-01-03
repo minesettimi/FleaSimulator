@@ -14,14 +14,14 @@ public class GetDynamicPriceOverride : AbstractPatch
 {
     private static OfferHelper offerHelper;
     private static PresetService presetService;
-    
+
     protected override MethodBase? GetTargetMethod()
     {
         offerHelper = ServiceLocator.ServiceProvider.GetService<OfferHelper>()!;
         presetService = ServiceLocator.ServiceProvider.GetService<PresetService>()!;
         return typeof(RagfairPriceService).GetMethod(nameof(RagfairPriceService.GetDynamicItemPrice));
     }
-    
+
     //can't override the middle and the functions used don't have enough params, replace it
     [PatchPrefix]
     public static bool Prefix(MongoId itemTemplateId,

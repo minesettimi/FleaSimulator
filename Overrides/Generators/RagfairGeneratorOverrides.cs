@@ -1,7 +1,6 @@
 using System.Reflection;
 using FleaSimulator.Generators;
 using FleaSimulator.Helpers;
-using FleaSimulator.Models.State;
 using FleaSimulator.Services;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
@@ -15,7 +14,7 @@ public class CreateOffersFromAssortOverride : AbstractPatch
 {
     private static FleaOfferGenerator generator;
     private static PresetService presetService;
-    
+
     protected override MethodBase? GetTargetMethod()
     {
         generator = ServiceLocator.ServiceProvider.GetService<FleaOfferGenerator>()!;
@@ -38,7 +37,7 @@ public class GenerateDynamicOffersOverride : AbstractPatch
 {
     private static OfferHelper offerHelper;
     private static PresetService presetService;
-    
+
     protected override MethodBase? GetTargetMethod()
     {
         presetService = ServiceLocator.ServiceProvider.GetService<PresetService>();

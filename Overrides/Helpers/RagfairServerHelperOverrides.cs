@@ -12,7 +12,7 @@ public class CalculateStackCountOverride : AbstractPatch
 {
     private static OfferHelper offerHelper;
     private static PresetService presetService;
-    
+
     protected override MethodBase? GetTargetMethod()
     {
         presetService = ServiceLocator.ServiceProvider.GetRequiredService<PresetService>();

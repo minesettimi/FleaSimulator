@@ -27,9 +27,9 @@ public class ItemDataService
 {
     public SaveState CurrentState;
     public int InterpSimulations = 0;
-    
+
     private Dictionary<MongoId, double> originalItems;
-    
+
     public async Task OnLoad()
     {
         SaveState? loadedState = await jsonUtil.DeserializeFromFileAsync<SaveState>(Path.Join(preset.ModPath, "state.json"));
@@ -102,7 +102,7 @@ public class ItemDataService
         
         logger.Debug("[FleaSimulator] Saved current market state.");
     }
-    
+
     //create a new blank state based on the config
     private SaveState GenerateState()
     {
@@ -207,7 +207,7 @@ public class ItemDataService
             itemState.Category = category;
         }
     }
-    
+
     public CategoryConfig? RetrieveItemCategory(TemplateItem item)
     {
         CategoryConfig? resultCategory = null;

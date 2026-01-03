@@ -33,12 +33,14 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
     RagfairOfferHolder offerHolder,
     ISptLogger<FleaOfferGenerator> logger)
 {
-    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    private readonly MethodBase _removeBannedPlates = typeof(RagfairOfferGenerator)
-        .GetMethod("RemoveBannedPlatesFromPreset",  BindingFlags.Instance | BindingFlags.NonPublic)!;
     private readonly MethodBase _createSingleOffer = typeof(RagfairOfferGenerator)
         .GetMethod("CreateSingleOfferForItem",  BindingFlags.Instance | BindingFlags.NonPublic)!;
-    
+
+    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+
+    private readonly MethodBase _removeBannedPlates = typeof(RagfairOfferGenerator)
+        .GetMethod("RemoveBannedPlatesFromPreset",  BindingFlags.Instance | BindingFlags.NonPublic)!;
+
     public bool CreateOffersFromAssorts(List<Item> assortItems, bool isExpired)
     {
         Item? rootItem = assortItems.FirstOrDefault();

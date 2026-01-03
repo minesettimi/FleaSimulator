@@ -23,7 +23,7 @@ public class SimulationService(PresetService preset,
 {
     private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
     private Timer SimulationTimer;
-    
+
     public Task OnLoad()
     {   
         //run simulations to catch up since last time
