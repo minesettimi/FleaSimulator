@@ -15,7 +15,6 @@ public class PreRagfair(PresetService presetService,
 {
     public async Task OnLoad()
     {
-        
         await itemService.OnLoad();
         await simService.OnLoad();
         

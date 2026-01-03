@@ -2,6 +2,7 @@ using System.Reflection;
 using FleaSimulator.Models.Config;
 using FleaSimulator.Models.State;
 using FleaSimulator.Services;
+using FleaSimulator.Utils;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.Extensions;
@@ -36,6 +37,7 @@ public class SellHelper(PresetService presetService,
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     RagfairPriceService priceService,
+    FleaMathUtil fleaMathUtil,
     ISptLogger<SellHelper> logger)
 {
     
@@ -287,12 +289,14 @@ public class SellHelper(PresetService presetService,
         List<MongoId> expiredOffers = offerHolder.GetStaleOfferIds();
         
         double totalPrice = 0.0;
+        double minPrice = -1;
         bool isPreset = false;
 
         int validOffers = 0;
         int position = 0;
         foreach (RagfairOffer offer in offers)
         {
+            //prevent player or trader offers changing rates
             if (!offer.IsFakePlayerOffer() || offer.IsTraderOffer() || expiredOffers.Contains(offer.Id))
                 continue;
 
@@ -316,6 +320,9 @@ public class SellHelper(PresetService presetService,
             
             totalPrice += price.Value;
             
+            if (price.Value < minPrice || minPrice < 0)
+                minPrice = price.Value;
+            
             //move the position of this new item up for each item of lower price 
             if (price < singleItemPrice)
                 position++;
@@ -335,10 +342,29 @@ public class SellHelper(PresetService presetService,
 
         double sellChance = maxChance - mathUtil.MapToRange(position, 0, maxSellPos, 0, maxChance);
 
+        //check how far below the rest of the prices
+        if (position == 0 && sellConfig.DealThreshold > 0 && minPrice >= 0)
+        {
+            double minDifference = minPrice - singleItemPrice;
+            double thresholdValue = minPrice * sellConfig.DealThreshold;
+
+            int thresholdsMet = (int)Math.Floor(minDifference / thresholdValue);
+
+            position -= thresholdsMet;
+            sellChance += thresholdsMet * sellConfig.DealChance;
+        }
+        else if (minPrice < 0)
+        {
+            sellChance = 100.0;
+            position -= 3;
+        }
+        
         resultPos = position;
         double resultChance = chaosHelper.ChaosShift(category, sellChance) * qualityMod;
 
-        logger.Debug($"[FleaSimulator] Selling item {tpl} at position {position} for {singleItemPrice} with sell chance {resultChance}%");
+        if (presetService.Config.Core.Debug)
+            logger.Info($"[FleaSimulator] Selling item {tpl} at position {position} for {singleItemPrice} " +
+                        $"with sell chance {resultChance}%");
         
         return resultChance;
     }
@@ -348,19 +374,44 @@ public class SellHelper(PresetService presetService,
         long currentTimestamp = timeUtil.GetTimeStamp();
         SellConfig sellConfig = presetService.Config.Core.SellConfig;
         
-        logger.Debug($"[FleaSimulator] There are {results.Count} sell results.");
+        if (presetService.Config.Core.Debug)
+            logger.Info($"[FleaSimulator] There are {results.Count} sell results.");
+
+        double maxDelay;
         
-        double maxDelay = sellConfig.DemandMinDelay - chaosHelper.MapToRange01(itemState.Category.Demand,
-            sellConfig.DemandMaxDelay, sellConfig.DemandMinDelay);
+        //since we can map from high to low, inverse the input to get the same effect
+        double inverseDemand = 1 - itemState.Category.Demand;
+
+        //use exponential curve
+        if (sellConfig.DemandDelayExp > 1)
+        {
+            maxDelay = fleaMathUtil.MapToRangeExp(inverseDemand, sellConfig.DemandMaxDelay,
+                sellConfig.DemandMinDelay, sellConfig.DemandDelayExp);
+        }
+        else
+        {
+            maxDelay = chaosHelper.MapToRange01(inverseDemand, sellConfig.DemandMaxDelay,
+                sellConfig.DemandMinDelay);
+        }
+        
         maxDelay += sellConfig.PosDelay * position;
+        
+        //don't go below 0
+        maxDelay = Math.Min(maxDelay, 0);
 
         maxDelay = chaosHelper.ChaosShift(itemState.Category, maxDelay);
 
         foreach (SellResult result in results)
         {
-            int delay = (int)Math.Round(randomUtil.GetBiasedRandomNumber(0, maxDelay, 0, 1));
+            //don't bother if it takes longer for the flea to update
+            int delay;
+            if (maxDelay > _ragfairConfig.RunIntervalSeconds)
+                delay = (int)Math.Round(randomUtil.GetBiasedRandomNumber(0, maxDelay, maxDelay * 0.75, 5));
+            else
+                delay = (int)Math.Round(maxDelay);
             
-            logger.Debug($"[FleaSimulator] Setting offer delay {delay}s");
+            if (presetService.Config.Core.Debug)
+                logger.Info($"[FleaSimulator] Setting offer delay {delay}s");
 
             result.SellTime = currentTimestamp + delay;
         }

@@ -48,9 +48,16 @@ public class SellConfig
     [JsonPropertyName("demandMaxBuyChance")]
     public double DemandMaxBuyChance { get; set; } = 100.0;
 
+    [JsonPropertyName("dealThresholdMult")]
+    public double DealThreshold { get; set; } = 0.15;
+
+    [JsonPropertyName("dealChanceIncrease")]
+    public double DealChance { get; set; } = 10.0;
+
     [JsonPropertyName("demandMinDelay")] public int DemandMinDelay { get; set; } = 3600;
 
     [JsonPropertyName("demandMaxDelay")] public int DemandMaxDelay { get; set; } = 0;
+    [JsonPropertyName("demandDelayExp")] public int DemandDelayExp { get; set; } = 4;
     [JsonPropertyName("posDelay")] public int PosDelay { get; set; } = 30;
 }
 

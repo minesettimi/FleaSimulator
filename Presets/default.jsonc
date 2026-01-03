@@ -25,10 +25,14 @@
       "enabled": true,
       "supplyMinPosition": 2, //highest position in the flea list for an item to be 0% sell chance at minimum supply starting from 0
       "supplyMaxPosition": 10, //position in the flea at maximum supply
-      "demandMinBuyChance": 50.0, //chance an item is bought at the lowest position when at minimum demand 
+      "demandMinBuyChance": 60.0, //chance an item is bought at the lowest position when at minimum demand 
       "demandMaxBuyChance": 100.0, //chance at maximum demand
+      "dealThresholdMult": 0.15, //if an offer is below the minimum offer by this mulitplier of the minimum price, increase chance and decrease delay (-1 to disable)
+      //for example if the lowest price is 100000 rub then with 0.15, every 15000 under the min increases odds and reduces delay
+      "dealChanceIncrease": 10.0, //how much percenage to increase the odds of selling for each deal threshold met
       "demandMinDelay": 3600, //max delay for an item to be sold when at minimum demand in seconds
       "demandMaxDelay": 0, //max delay at maximum demand
+      "demandDelayExp": 4, //sets exponent in exponential curve for delay, higher makes lower demands have less delay, set to -1 to disable
       "posDelay": 30 //how many seconds to add to the delay for each position the offer placed is past 0
     },
     //progression of prices over a simulated wipe (THIS DOES !NOT! WIPE YOUR CHARACTER!)
@@ -51,7 +55,7 @@
     "simInterval": 30, //how often in minutes the flea market is simulated
     "interpSim": true, //should the mod run every simulation not carried out when it starts up
     "overrideUnreasonablePrices": true, //should SPT's unreasonable price system be disabled
-    "debug": false,
+    "debug": true,
     "debugSimulation": false,
     "debugItem": ""
   },
@@ -76,7 +80,6 @@
       "644120aa86ffbe10ee032b6f": "SuperRare", //armored plates
       "5448e53e4bdc2d60728b4567": "Rare", //backpacks
       "57bef4c42459772e8d35a53b": "Rare", //armored equipment
-      "5448fe124bdc2da5018b4567": "Common", //weapon mods
       "5485a8684bdc2da71d8b4567": "Rare", //ammo
       "5422acb9af1c889c16000029": "Weapon", //weapons
       "590c745b86f7743cc433c5f2": "Crafting", //other
@@ -156,7 +159,7 @@
       "maxOfferPrice": 1.2,
       "settleSpeed": 0.01,
       "settleSpeedBelow": 0.005,
-      "demand": 0.6,
+      "demand": 0.75,
       "supply": 1.0
     },
     "Crafting":
@@ -222,6 +225,7 @@
     },
     "Common":
     {
+      "earlyWipeMult": 1.5,
       "chaos": 0.05,
       "chaosChance": 0.3,
       "minOfferPrice": 0.85,
