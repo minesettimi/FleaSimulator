@@ -27,9 +27,9 @@
       "supplyMaxPosition": 10, //position in the flea at maximum supply
       "demandMinBuyChance": 60.0, //chance an item is bought at the lowest position when at minimum demand 
       "demandMaxBuyChance": 100.0, //chance at maximum demand
-      "dealThresholdMult": 0.15, //if an offer is below the minimum offer by this mulitplier of the minimum price, increase chance and decrease delay (-1 to disable)
+      "dealThresholdMult": 0.15, //if an offer is below the minimum offer by this multiplier of the minimum price, increase chance and decrease delay (-1 to disable)
       //for example if the lowest price is 100000 rub then with 0.15, every 15000 under the min increases odds and reduces delay
-      "dealChanceIncrease": 10.0, //how much percenage to increase the odds of selling for each deal threshold met
+      "dealChanceIncrease": 10.0, //how much percentage to increase the odds of selling for each deal threshold met
       "demandMinDelay": 3600, //max delay for an item to be sold when at minimum demand in seconds
       "demandMaxDelay": 0, //max delay at maximum demand
       "demandDelayExp": 4, //sets exponent in exponential curve for delay, higher makes lower demands have less delay, set to -1 to disable
@@ -55,7 +55,7 @@
     "simInterval": 30, //how often in minutes the flea market is simulated
     "interpSim": true, //should the mod run every simulation not carried out when it starts up
     "overrideUnreasonablePrices": true, //should SPT's unreasonable price system be disabled
-    "debug": true,
+    "debug": false,
     "debugSimulation": false,
     "debugItem": ""
   },
