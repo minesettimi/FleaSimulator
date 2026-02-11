@@ -18,8 +18,6 @@ public class RagfairConfigHelper(ConfigServer configServer,
 
     public Task OnLoad()
     {
-        
-
         ragfairConfig.Dynamic.GenerateBaseFleaPrices.UseHandbookPrice = false;
         
         //override refresh system

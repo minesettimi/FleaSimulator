@@ -155,8 +155,10 @@ public class ItemDataService
             ItemState itemState = new();
             double? liveValue = !preset.Config.Core.BuyConfig.UseHandbook ? originalItems.GetValueOrDefault(key) : null;
 
-            if (liveValue == 0 || liveValue is null)
+            if (liveValue == 0 || liveValue == null)
                 liveValue = handbook.Items.SingleOrDefault(i => i.Id == key)?.Price;
+
+            liveValue = Math.Clamp(liveValue!.Value, int.MinValue, int.MaxValue);
             
             int convertedValue = Convert.ToInt32(Math.Round(category.ValueMult * liveValue.GetValueOrDefault(0)));
 
