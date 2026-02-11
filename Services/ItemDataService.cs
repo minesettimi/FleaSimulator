@@ -158,9 +158,9 @@ public class ItemDataService
             if (liveValue == 0 || liveValue == null)
                 liveValue = handbook.Items.SingleOrDefault(i => i.Id == key)?.Price;
 
-            liveValue = Math.Clamp(liveValue!.Value, int.MinValue, int.MaxValue);
+            double resultVal = Math.Round(category.ValueMult * liveValue.GetValueOrDefault(0));
             
-            int convertedValue = Convert.ToInt32(Math.Round(category.ValueMult * liveValue.GetValueOrDefault(0)));
+            int convertedValue = Convert.ToInt32(Math.Clamp(resultVal, int.MinValue + 1, int.MaxValue - 1));
 
             double earlyWipeMult = 1d;
 
