@@ -154,10 +154,10 @@ public class ItemDataService
             
             ItemState itemState = new();
             double? liveValue = !preset.Config.Core.BuyConfig.UseHandbook ? originalItems.GetValueOrDefault(key) : null;
-
+            
             if (liveValue == 0 || liveValue == null)
                 liveValue = handbook.Items.SingleOrDefault(i => i.Id == key)?.Price;
-
+            
             double resultVal = Math.Round(category.ValueMult * liveValue.GetValueOrDefault(0));
             
             int convertedValue = Convert.ToInt32(Math.Clamp(resultVal, int.MinValue + 1, int.MaxValue - 1));
@@ -167,7 +167,7 @@ public class ItemDataService
             if (newState.WipeState == WipeState.Start)
                 earlyWipeMult = category.EarlyWipeMult;
 
-            int startingPrice = Convert.ToInt32(Math.Round(convertedValue * earlyWipeMult));
+            int startingPrice = (int)Math.Round(Math.Clamp(resultVal * earlyWipeMult, int.MinValue + 1, int.MaxValue - 1));
             
             itemState.Category = category;
             itemState.TruePrice = convertedValue;
