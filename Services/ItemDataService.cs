@@ -167,7 +167,7 @@ public class ItemDataService
             if (newState.WipeState == WipeState.Start)
                 earlyWipeMult = category.EarlyWipeMult;
 
-            int startingPrice = (int)Math.Round(Math.Clamp(resultVal * earlyWipeMult, int.MinValue + 1, int.MaxValue - 1));
+            int startingPrice = (int)Math.Round(Math.Clamp(resultVal * earlyWipeMult, -1073741824, 1073741823)); //half of maxes
             
             itemState.Category = category;
             itemState.TruePrice = convertedValue;
