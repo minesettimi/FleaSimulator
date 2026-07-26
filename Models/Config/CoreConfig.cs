@@ -9,7 +9,6 @@ public class CoreConfig
     [JsonPropertyName("buy")] public BuyConfig BuyConfig { get; set; } = new();
     [JsonPropertyName("sell")] public SellConfig SellConfig { get; set; } = new();
     [JsonPropertyName("wipePrices")] public WipePriceConfig WipePrices { get; set; } = new();
-    [JsonPropertyName("progressiveFlea")] public ProgressiveConfig ProgressiveFlea { get; set; } = new();
     [JsonPropertyName("updateInterval")] public double UpdateInterval { get; set; } = 60.0;
     [JsonPropertyName("simInterval")] public double SimulationInterval { get; set; } = 60.0;
     [JsonPropertyName("interpSim")] public bool InterpSimulation { get; set; } = true;
@@ -39,27 +38,13 @@ public class BuyConfig
 public class SellConfig
 {
     [JsonPropertyName("enabled")] public bool Enabled { get; set; } = true;
-
-    [JsonPropertyName("supplyMinPosition")] 
-    public int SupplyMinPosition { get; set; } = 2;
-
-    [JsonPropertyName("supplyMaxPosition")] 
-    public int SupplyMaxPosition { get; set; } = 10;
-
-    [JsonPropertyName("demandMinBuyChance")]
-    public double DemandMinBuyChance { get; set; } = 50.0;
-
-    [JsonPropertyName("demandMaxBuyChance")]
-    public double DemandMaxBuyChance { get; set; } = 100.0;
-
-    [JsonPropertyName("dealThresholdMult")]
-    public double DealThreshold { get; set; } = 0.15;
-
-    [JsonPropertyName("dealChanceIncrease")]
-    public double DealChance { get; set; } = 10.0;
-
+    [JsonPropertyName("supplyMinPosition")] public int SupplyMinPosition { get; set; } = 2;
+    [JsonPropertyName("supplyMaxPosition")] public int SupplyMaxPosition { get; set; } = 10;
+    [JsonPropertyName("demandMinBuyChance")] public double DemandMinBuyChance { get; set; } = 90.0;
+    [JsonPropertyName("demandMaxBuyChance")] public double DemandMaxBuyChance { get; set; } = 100.0;
+    [JsonPropertyName("dealThresholdMult")] public double DealThreshold { get; set; } = 0.15;
+    [JsonPropertyName("dealChanceIncrease")] public double DealChance { get; set; } = 10.0;
     [JsonPropertyName("demandMinDelay")] public int DemandMinDelay { get; set; } = 3600;
-
     [JsonPropertyName("demandMaxDelay")] public int DemandMaxDelay { get; set; } = 0;
     [JsonPropertyName("demandDelayExp")] public int DemandDelayExp { get; set; } = 4;
     [JsonPropertyName("posDelay")] public int PosDelay { get; set; } = 30;
@@ -68,10 +53,7 @@ public class SellConfig
 public class WipePriceConfig
 {
     [JsonPropertyName("enabled")] public bool Enabled { get; set; } = true;
-
-    [JsonPropertyName("disableAboveLevel")]
-    public int DisableLevel { get; set; } = 15;
-
+    [JsonPropertyName("disableAboveLevel")] public int DisableLevel { get; set; } = 15;
     [JsonPropertyName("balancedPricing")] public bool BalancedPricing { get; set; } = false;
     [JsonPropertyName("startLength")] public double StartLength { get; set; } = 10.0;
     [JsonPropertyName("earlyQuantityMult")] public double EarlyQuantityMult { get; set; } = 0.5;
