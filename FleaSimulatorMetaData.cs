@@ -12,7 +12,7 @@ public static class FleaSimulatorMetaData
         public override string Name { get; init; } = "Advanced Flea Market Simulator";
         public override string Author { get; init; } = "minesettimi";
         public override List<string>? Contributors { get; init; }
-        public override Version Version { get; init; } = new(1, 3, 0);
+        public override Version Version { get; init; } = new(1, 4, 0);
         public override Range SptVersion { get; init; } = new("~4.0.4");
 
         public override List<string>? Incompatibilities { get; init; } = [];
