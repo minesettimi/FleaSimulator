@@ -38,6 +38,9 @@ public class OfferHelper(DatabaseService database,
 
     public void UpdatePrices(bool onlyTime)
     {
+        if (!presetService.Config.Core.Simulate)
+            return;
+            
         SaveState currentState = dataService.CurrentState;
         
         //update state

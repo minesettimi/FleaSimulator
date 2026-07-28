@@ -32,6 +32,7 @@ public class ItemDataService
 
     public async Task OnLoad()
     {
+        
         SaveState? loadedState = await jsonUtil.DeserializeFromFileAsync<SaveState>(Path.Join(preset.ModPath, "state.json"));
 
         Dictionary<MongoId, double> priceList = database.GetPrices();
@@ -112,9 +113,11 @@ public class ItemDataService
         
         WipePriceConfig wipePriceConfig = preset.Config.Core.WipePrices;
         newState.WipeState = wipePriceConfig.Enabled ? WipeState.Start : WipeState.Middle;
-        
-        logger.Info($"[FleaSimulator] Generating new market at state: {newState.WipeState}.");
-        if (wipePriceConfig.DisableLevel != -1)
+
+        if (!preset.Config.Core.Simulate)
+            newState.WipeState = WipeState.Middle;
+            
+        if (wipePriceConfig.Enabled && wipePriceConfig.DisableLevel != -1)
         {
             int maxLevel = 0;
             
@@ -139,6 +142,7 @@ public class ItemDataService
         if (newState.WipeState == WipeState.Start)
             newState.WipeChange = DateTime.Now.AddDays(wipePriceConfig.StartLength);
 
+        logger.Info($"[FleaSimulator] Generating new market at state: {newState.WipeState}.");
         foreach ((MongoId key, TemplateItem item) in items)
         {
             if (item.Properties is null || !item.Properties.CanSellOnRagfair.GetValueOrDefault(false)
