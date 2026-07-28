@@ -15,7 +15,7 @@ public static class FleaSimulatorMetaData
         public override Version Version { get; init; } = new(1, 3, 0);
         public override Range SptVersion { get; init; } = new("~4.0.4");
 
-        public override List<string>? Incompatibilities { get; init; } = ["xyz.drakia.livefleaprices", "com.acidphantasm.delayedfleasales"];
+        public override List<string>? Incompatibilities { get; init; } = [];
         public override Dictionary<string, Range>? ModDependencies { get; init; }
 
         public override string? Url { get; init; } = "https://github.com/minesettimi/FleaSimulator";

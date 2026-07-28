@@ -18,11 +18,9 @@ public class SimulationService(PresetService preset,
     ChaosHelper chaosHelper,
     RandomUtil randomUtil,
     TraderHelper traderHelper,
-    ConfigServer configServer,
     ISptLogger<SimulationService> logger)
 {
-    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    private Timer SimulationTimer;
+    private Timer _simulationTimer;
 
     public Task OnLoad()
     {   
@@ -46,7 +44,7 @@ public class SimulationService(PresetService preset,
         //calculate when first simulation should occur
         long updateLeft = itemData.CurrentState.NextUpdate - itemData.CurrentState.UpdateTime;
         
-        SimulationTimer = new Timer(_ =>
+        _simulationTimer = new Timer(_ =>
         {
             SimulateMarket();
         }, null, TimeSpan.FromSeconds(updateLeft), TimeSpan.FromMinutes(preset.Config.Core.SimulationInterval));

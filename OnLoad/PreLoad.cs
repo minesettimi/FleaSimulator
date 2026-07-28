@@ -11,7 +11,7 @@ using SPTarkov.Server.Core.DI;
 
 namespace FleaSimulator.OnLoad;
 
-[Injectable(TypePriority = OnLoadOrder.PreSptModLoader)]
+[Injectable(TypePriority = OnLoadOrder.PreSptModLoader + 20)]
 public class PreLoad(PresetService presetService,
     RagfairConfigHelper configHelper) : IOnLoad
 {

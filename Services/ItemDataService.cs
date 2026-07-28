@@ -55,7 +55,6 @@ public class ItemDataService
             
             int simTimeSecs = (int)Math.Round(preset.Config.Core.SimulationInterval * 60);
             
-            
             if (preset.Config.Core.InterpSimulation)
             {
                 if (interpDiff > 0)
