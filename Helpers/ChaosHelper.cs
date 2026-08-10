@@ -1,6 +1,6 @@
 using FleaSimulator.Models.Config;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 
 namespace FleaSimulator.Helpers;

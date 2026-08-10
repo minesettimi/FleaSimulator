@@ -10,11 +10,9 @@ using SPTarkov.Server.Core.Services;
 namespace FleaSimulator.Helpers;
 
 [Injectable]
-public class RagfairConfigHelper(ConfigServer configServer,
-    DatabaseService dbService,
-    PresetService presetService)
+public class RagfairConfigHelper(PresetService presetService,
+    RagfairConfig ragfairConfig)
 {
-    private readonly RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     public Task OnLoad()
     {

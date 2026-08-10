@@ -11,7 +11,7 @@ public class PreRagfair(PresetService presetService,
     ItemDataService itemService
     ): IOnLoad
 {
-    public async Task OnLoad()
+    public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
         await itemService.OnLoad();
         

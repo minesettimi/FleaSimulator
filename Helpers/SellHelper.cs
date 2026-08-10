@@ -3,21 +3,22 @@ using FleaSimulator.Models.Config;
 using FleaSimulator.Models.State;
 using FleaSimulator.Services;
 using FleaSimulator.Utils;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.Extensions;
-using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Items;
+using SPTarkov.Server.Core.Helpers.Profile;
+using SPTarkov.Server.Core.Helpers.Ragfair;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
+using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Servers;
-using SPTarkov.Server.Core.Services;
-using SPTarkov.Server.Core.Services.Mod;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 
 namespace FleaSimulator.Helpers;
@@ -29,7 +30,6 @@ public class SellHelper(PresetService presetService,
     RagfairOfferHelper offerHelper,
     RagfairController ragfairController,
     ItemHelper itemHelper,
-    ConfigServer configServer,
     ChaosHelper chaosHelper,
     InventoryHelper inventoryHelper,
     RagfairOfferHolder offerHolder,
@@ -39,6 +39,7 @@ public class SellHelper(PresetService presetService,
     RandomUtil randomUtil,
     RagfairPriceService priceService,
     FleaMathUtil fleaMathUtil,
+    RagfairConfig ragfairConfig,
     ISptLogger<SellHelper> logger)
 {
     private readonly MethodBase _calculateRequirements = typeof(RagfairController)
@@ -58,8 +59,6 @@ public class SellHelper(PresetService presetService,
             BindingFlags.Instance | BindingFlags.NonPublic)!;
 
     //I would like to not have to recreate all of these functions but the functions I want to override are passed no item data
-    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
-
     public ItemEventRouterResponse? CreatePackOffer(
         MongoId sessionID,
         AddOfferRequestData offerRequest,
@@ -103,7 +102,7 @@ public class SellHelper(PresetService presetService,
         List<SellResult> initialResults = sellHelper.RollForSale(sellChance, (int)stackTotal, true);
         offer.SellResults = SetOfferDelays(firstItemState, initialResults, offerPos);
 
-        if (_ragfairConfig.Sell.Fees)
+        if (ragfairConfig.Sell.Fees)
         {
             bool feeChargeFailed = (bool)_chargePlayerTaxFee.Invoke(ragfairController, [
                 sessionID,
@@ -176,7 +175,7 @@ public class SellHelper(PresetService presetService,
         List<SellResult> initialResults = sellHelper.RollForSale(sellChance, (int)stackTotal);
         offer.SellResults = SetOfferDelays(firstItemState, initialResults, offerPos);
 
-        if (_ragfairConfig.Sell.Fees)
+        if (ragfairConfig.Sell.Fees)
         {
             bool feeChargeFailed = (bool)_chargePlayerTaxFee.Invoke(ragfairController, [
                 sessionID,
@@ -245,7 +244,7 @@ public class SellHelper(PresetService presetService,
         List<SellResult> initialResults = sellHelper.RollForSale(sellChance, (int)stackTotal, true);
         offer.SellResults = SetOfferDelays(firstItemState, initialResults, offerPos);
 
-        if (_ragfairConfig.Sell.Fees)
+        if (ragfairConfig.Sell.Fees)
         {
             bool feeChargeFailed = (bool)_chargePlayerTaxFee.Invoke(ragfairController, [
                 sessionID,
@@ -408,7 +407,7 @@ public class SellHelper(PresetService presetService,
         {
             //don't bother if it takes longer for the flea to update
             int delay;
-            if (maxDelay > _ragfairConfig.RunIntervalSeconds)
+            if (maxDelay > ragfairConfig.RunIntervalSeconds)
                 delay = (int)Math.Round(randomUtil.GetBiasedRandomNumber(0, maxDelay, maxDelay * 0.75, 5));
             else
                 delay = (int)Math.Round(maxDelay);

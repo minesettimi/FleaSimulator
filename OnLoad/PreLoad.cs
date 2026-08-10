@@ -11,30 +11,19 @@ using SPTarkov.Server.Core.DI;
 
 namespace FleaSimulator.OnLoad;
 
-[Injectable(TypePriority = OnLoadOrder.PreSptModLoader + 20)]
+[Injectable(TypePriority = OnLoadOrder.Preload + 20)]
 public class PreLoad(PresetService presetService,
-    RagfairConfigHelper configHelper) : IOnLoad
+    RagfairConfigHelper configHelper,
+    IEnumerable<IRuntimePatch> patches
+    ) : IOnLoad
 {
-    private readonly List<AbstractPatch> _patches =
-    [
-        new UpdateOverride(),
-        new CreateOffersFromAssortOverride(),
-        new GenerateDynamicOffersOverride(),
-        new GetDynamicPriceOverride(),
-        new CalculateStackCountOverride(),
-        new CreatePackOfferOverride(),
-        new CreateMultiOfferOverride(),
-        new CreateSingleOfferOverride()
-    ];
-
-    public async Task OnLoad()
+    public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
         await presetService.OnLoad();
         await configHelper.OnLoad();
         
         //enable overrides
-        foreach (AbstractPatch patch in _patches)
+        foreach (IRuntimePatch patch in patches)
             patch.Enable();
-        
     }
 }

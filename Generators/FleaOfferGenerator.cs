@@ -3,9 +3,13 @@ using FleaSimulator.Helpers;
 using FleaSimulator.Models.Config;
 using FleaSimulator.Models.State;
 using FleaSimulator.Services;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Generators;
+using SPTarkov.Server.Core.Generators.Ragfair;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Items;
+using SPTarkov.Server.Core.Helpers.Ragfair;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
@@ -23,20 +27,16 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
     ItemHelper itemHelper,
     RagfairServerHelper serverHelper,
     PresetHelper presetHelper,
-    ConfigServer configServer,
     ItemDataService itemService,
     PresetService presetService,
-    MathUtil mathUtil,
+    RagfairConfig ragfairConfig,
     RandomUtil randomUtil,
     ChaosHelper chaosHelper,
     ICloner cloner,
-    RagfairOfferHolder offerHolder,
-    ISptLogger<FleaOfferGenerator> logger)
+    RagfairOfferHolder offerHolder)
 {
     private readonly MethodBase _createSingleOffer = typeof(RagfairOfferGenerator)
         .GetMethod("CreateSingleOfferForItem",  BindingFlags.Instance | BindingFlags.NonPublic)!;
-
-    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     private readonly MethodBase _removeBannedPlates = typeof(RagfairOfferGenerator)
         .GetMethod("RemoveBannedPlatesFromPreset",  BindingFlags.Instance | BindingFlags.NonPublic)!;
@@ -54,9 +54,9 @@ public class FleaOfferGenerator(RagfairOfferGenerator offerGenerator,
             return false;
         
         bool isPreset = rootItem.Upd?.SptPresetId is not null && presetHelper.IsPreset(rootItem.Upd.SptPresetId.Value);
-        if (isPreset && _ragfairConfig.Dynamic.Blacklist.EnableBsgList)
+        if (isPreset && ragfairConfig.Dynamic.Blacklist.EnableBsgList)
         {
-            _removeBannedPlates.Invoke(offerGenerator, [assortItems, _ragfairConfig.Dynamic.Blacklist.ArmorPlate]);
+            _removeBannedPlates.Invoke(offerGenerator, [assortItems, ragfairConfig.Dynamic.Blacklist.ArmorPlate]);
         }
         
         //override offer counts

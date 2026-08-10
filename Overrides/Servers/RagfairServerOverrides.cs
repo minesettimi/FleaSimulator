@@ -1,5 +1,6 @@
 using System.Reflection;
 using FleaSimulator.Services;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Extensions;
@@ -10,14 +11,22 @@ using SPTarkov.Server.Core.Utils;
 
 namespace FleaSimulator.Overrides.Servers;
 
+[Injectable]
 public class UpdateOverride : AbstractPatch
 {
-    private static PresetService _presetService;
+    private static PresetService _presetService = null!;
+    private static RagfairOfferHolder _offerHolder = null!;
+    
     private static long lastUpdate;
+
+    public UpdateOverride(PresetService presetService, RagfairOfferHolder offerHolder)
+    {
+        _presetService = presetService;
+        _offerHolder = offerHolder;
+    }
 
     protected override MethodBase? GetTargetMethod()
     {
-        _presetService = ServiceLocator.ServiceProvider.GetRequiredService<PresetService>()!;
         return typeof(RagfairServer).GetMethod(nameof(RagfairServer.Update));
     }
 
@@ -35,16 +44,15 @@ public class UpdateOverride : AbstractPatch
         lastUpdate = now;
         
         //kill off every fake flea offer before processing
-        RagfairOfferHolder offerHolder = ServiceLocator.ServiceProvider.GetRequiredService<RagfairOfferHolder>();
-        List<MongoId> expired = offerHolder.GetStaleOfferIds();
+        List<MongoId> expired = _offerHolder.GetStaleOfferIds();
         
         //credit to DrakiaXYZ
-        foreach (RagfairOffer offer in offerHolder.GetOffers())
+        foreach (RagfairOffer offer in _offerHolder.GetOffers())
         {
             if (offer.IsPlayerOffer() || offer.IsTraderOffer() || expired.Contains(offer.Id))
                 continue;
             
-            offerHolder.FlagOfferAsExpired(offer.Id);
+            _offerHolder.FlagOfferAsExpired(offer.Id);
         }
         
         return true;

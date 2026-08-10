@@ -1,10 +1,13 @@
 using FleaSimulator.Models.Config;
 using FleaSimulator.Models.State;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Items;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
@@ -19,10 +22,9 @@ public class ItemDataService
     (PresetService preset, 
         JsonUtil jsonUtil, 
         ISptLogger<ItemDataService> logger,
-        DatabaseService databaseService,
         ItemHelper itemHelper,
-        DatabaseService database,
         SaveServer saveServer,
+        TemplateTable templateTable,
         ICloner cloner)
 {
     public SaveState CurrentState;
@@ -34,9 +36,7 @@ public class ItemDataService
     {
         
         SaveState? loadedState = await jsonUtil.DeserializeFromFileAsync<SaveState>(Path.Join(preset.ModPath, "state.json"));
-
-        Dictionary<MongoId, double> priceList = database.GetPrices();
-        originalItems = cloner.Clone(priceList)!;
+        originalItems = cloner.Clone(templateTable.Prices)!;
 
         if (loadedState == null)
         {
@@ -108,9 +108,6 @@ public class ItemDataService
     {
         SaveState newState = new();
         
-        Dictionary<MongoId, TemplateItem> items = databaseService.GetItems();
-        HandbookBase handbook = databaseService.GetHandbook();
-        
         WipePriceConfig wipePriceConfig = preset.Config.Core.WipePrices;
         newState.WipeState = wipePriceConfig.Enabled ? WipeState.Start : WipeState.Middle;
 
@@ -143,7 +140,7 @@ public class ItemDataService
             newState.WipeChange = DateTime.Now.AddDays(wipePriceConfig.StartLength);
 
         logger.Info($"[FleaSimulator] Generating new market at state: {newState.WipeState}.");
-        foreach ((MongoId key, TemplateItem item) in items)
+        foreach ((MongoId key, TemplateItem item) in templateTable.Items)
         {
             if (item.Properties is null || !item.Properties.CanSellOnRagfair.GetValueOrDefault(false)
                 || !itemHelper.IsValidItem(item))
@@ -159,7 +156,7 @@ public class ItemDataService
             double? liveValue = !preset.Config.Core.BuyConfig.UseHandbook ? originalItems.GetValueOrDefault(key) : null;
             
             if (liveValue == 0 || liveValue == null)
-                liveValue = handbook.Items.SingleOrDefault(i => i.Id == key)?.Price;
+                liveValue = templateTable.Handbook.Items.SingleOrDefault(i => i.Id == key)?.Price;
             
             double resultVal = Math.Round(category.ValueMult * liveValue.GetValueOrDefault(0));
             
@@ -187,11 +184,9 @@ public class ItemDataService
 
     private void MapCategories(SaveState saveState)
     {
-        Dictionary<MongoId, TemplateItem> items = databaseService.GetItems();
-        
         foreach ((MongoId key, ItemState itemState) in saveState.Items)
         {
-            items.TryGetValue(key, out TemplateItem? trueItem);
+            templateTable.Items.TryGetValue(key, out TemplateItem? trueItem);
 
             if (trueItem is null)
             {

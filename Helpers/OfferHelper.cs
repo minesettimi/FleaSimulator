@@ -2,25 +2,29 @@ using System.Reflection;
 using FleaSimulator.Models.Config;
 using FleaSimulator.Models.State;
 using FleaSimulator.Services;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Items;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Ragfair;
 using SPTarkov.Server.Core.Utils;
 
 namespace FleaSimulator.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class OfferHelper(DatabaseService database,
-    ItemDataService dataService,
+public class OfferHelper(ItemDataService dataService,
     MathUtil mathUtil,
     RagfairPriceService ragfairPriceService,
-    ConfigServer configServer,
+    RagfairConfig ragfairConfig,
     PresetHelper presetHelper,
     HandbookHelper handbookHelper,
     RandomUtil randomUtil,
@@ -28,13 +32,12 @@ public class OfferHelper(DatabaseService database,
     ItemHelper itemHelper,
     PresetService presetService,
     ChaosHelper chaosHelper,
+    TemplateTable templateTable,
     ISptLogger<OfferHelper> logger
     )
 {
     private readonly MethodBase _getWeaponPresetprice = typeof(RagfairPriceService)
         .GetMethod("GetWeaponPresetPrice", BindingFlags.Instance | BindingFlags.NonPublic)!;
-
-    private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     public void UpdatePrices(bool onlyTime)
     {
@@ -52,8 +55,6 @@ public class OfferHelper(DatabaseService database,
         
         logger.Info("[FleaSimulator] Updating offer prices.");
 
-        Dictionary<MongoId, double> priceTable = database.GetPrices();
-
         //update all prices
         Dictionary<MongoId, ItemState> itemStates = dataService.CurrentState.Items;
         foreach (KeyValuePair<MongoId, ItemState> states in itemStates)
@@ -61,7 +62,7 @@ public class OfferHelper(DatabaseService database,
             double minPrice = Math.Min(states.Value.CurrentPrice, states.Value.TargetPrice);
             double maxPrice = Math.Max(states.Value.CurrentPrice, states.Value.TargetPrice);
             
-            priceTable[states.Key] = Math.Round(mathUtil.MapToRange(currentState.UpdateTime, currentState.LastUpdate,
+            templateTable.Prices[states.Key] = Math.Round(mathUtil.MapToRange(currentState.UpdateTime, currentState.LastUpdate,
                 currentState.NextUpdate,minPrice, maxPrice));
         }
     }
@@ -82,7 +83,7 @@ public class OfferHelper(DatabaseService database,
             price = (double)_getWeaponPresetprice.Invoke(ragfairPriceService, [item, offerItems, price])!;
         }
 
-        if (item is not null && !_ragfairConfig.Dynamic.IgnoreQualityPriceVarianceBlacklist.Contains(tplId))
+        if (item is not null && !ragfairConfig.Dynamic.IgnoreQualityPriceVarianceBlacklist.Contains(tplId))
         {
             double qualityModifier = itemHelper.GetItemQualityModifier(item);
             price *= qualityModifier;
@@ -121,7 +122,7 @@ public class OfferHelper(DatabaseService database,
         if (!itemDetails.Key)
             return false;
 
-        if (isPreset || itemHelper.IsOfBaseclasses(itemDetails.Value!.Id, _ragfairConfig.Dynamic.ShowAsSingleStack))
+        if (isPreset || itemHelper.IsOfBaseclasses(itemDetails.Value!.Id, ragfairConfig.Dynamic.ShowAsSingleStack))
             return false;
 
         int stackSize = itemDetails.Value?.Properties?.StackMaxSize ?? 1;

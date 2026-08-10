@@ -1,9 +1,11 @@
 using System.Text;
 using FleaSimulator.Models.Config;
 using FleaSimulator.Models.State;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Spt.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using Path = System.IO.Path;
@@ -13,8 +15,8 @@ namespace FleaSimulator.Services;
 [Injectable(InjectionType = InjectionType.Singleton)]
 public class DebugService(PresetService preset,
     SimulationService simService,
-    DatabaseService db,
     ItemDataService itemDataService,
+    TemplateTable templateTable,
     ISptLogger<DebugService> logger
     )
 {
@@ -24,8 +26,7 @@ public class DebugService(PresetService preset,
         if (!preset.Config.Core.DebugSimulation || preset.Config.Core.DebugItem == "")
             return;
 
-        Dictionary<MongoId, TemplateItem> items = db.GetItems();
-        TemplateItem? debugItem = items.GetValueOrDefault(preset.Config.Core.DebugItem);
+        TemplateItem? debugItem = templateTable.Items.GetValueOrDefault(preset.Config.Core.DebugItem);
 
         if (debugItem == null)
         {
@@ -33,7 +34,6 @@ public class DebugService(PresetService preset,
             return;
         }
         
-        HandbookBase handbook = db.GetHandbook();
         ItemState testItem = new();
         
         CategoryConfig? category = itemDataService.RetrieveItemCategory(debugItem);
@@ -47,7 +47,7 @@ public class DebugService(PresetService preset,
 
         MongoId id = preset.Config.Core.DebugItem;
         
-        double originalValue = handbook.Items.SingleOrDefault(i => i.Id == id)?.Price ?? 0;
+        double originalValue = templateTable.Handbook.Items.SingleOrDefault(i => i.Id == id)?.Price ?? 0;
         int convertedValue = Convert.ToInt32(Math.Round(originalValue * category.ValueMult));
 
         double earlyWipeMult = 1d;
