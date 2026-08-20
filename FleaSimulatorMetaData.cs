@@ -14,7 +14,7 @@ public static class FleaSimulatorMetaData
         public string Author { get; init; } = "minesettimi";
         public List<string>? Contributors { get; init; }
         public Version Version { get; init; } = new(2, 0, 1);
-        public Range SptVersion { get; init; } = new("~4.1.0");
+        public Range SptVersion { get; init; } = new("~4.1.3");
         public bool HasPrepatcher { get; init; }
 
         public List<string>? Incompatibilities { get; init; } = [];
