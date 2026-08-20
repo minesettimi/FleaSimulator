@@ -13,7 +13,7 @@ public static class FleaSimulatorMetaData
         public string Name { get; init; } = "Advanced Flea Market Simulator";
         public string Author { get; init; } = "minesettimi";
         public List<string>? Contributors { get; init; }
-        public Version Version { get; init; } = new(2, 0, 0);
+        public Version Version { get; init; } = new(2, 0, 1);
         public Range SptVersion { get; init; } = new("~4.1.0");
         public bool HasPrepatcher { get; init; }
 
